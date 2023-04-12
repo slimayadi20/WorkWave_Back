@@ -44,7 +44,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         ,"/getUser/{{userName}}","/updateUser/{{userName}}","/holiday","/addHoliday","/updateHoliday","/deleteHoliday/{id}","/holidaybyuser/{username}",
                 "/refresh","/PartenaireC/retrieve-partenaire/{Partenaire-id}","/PartenaireC/addPartenaire","/PartenaireC/updatePartenaire","/PartenaireC/deletePartenaire/{partenaire-id}" ,
                         "/OffreC/","/OffreC/retrieve-Offre/{Offre-id}","/OffreC/addOffre","/OffreC/updateOffre","/OffreC/deleteOffre/{Offre-id}",
-                        "/Contrat","/ContratById/{id}","/addContrat","/updateContrat","/deleteContrat/{id}").permitAll()
+                        "/Contrat","/ContratById/{id}","/addContrat","/updateContrat","/deleteContrat/{id}","/messages/{senderId}/{recipientId}/count","/messages/{senderId}/{recipientId}","/messages/{id}","/chat","/ws","/user/{userId}/queue/messages","/app/chat").permitAll()
                 .antMatchers(HttpHeaders.ALLOW).permitAll()
                 .anyRequest().authenticated()
                 .and()
