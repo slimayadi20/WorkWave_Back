@@ -9,9 +9,9 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -21,11 +21,25 @@ public class ChatController {
     @Autowired private ChatMessageService chatMessageService;
     @Autowired private ChatRoomService chatRoomService;
 
+
+    //{
+    //    "id": "1",
+    //    "chatId": "1",
+    //    "senderId": "2",
+    //    "recipientId": "1",
+    //    "senderName": "John",
+    //    "recipientName": "Jane",
+    //    "content": "Hello, Jane!",
+    //    "timestamp": "2022-04-12",
+    //    "status": "RECEIVED"
+    //}
     @MessageMapping("/chat")
     public void processMessage(@Payload ChatMessage chatMessage) {
         Optional<String> chatId = chatRoomService
                 .getChatId(chatMessage.getSenderId(), chatMessage.getRecipientId(), true);
         chatMessage.setChatId(chatId.get());
+        System.out.println(chatMessage);
+        System.out.println(chatId);
 
         ChatMessage saved = chatMessageService.save(chatMessage);
         messagingTemplate.convertAndSendToUser(
@@ -56,5 +70,29 @@ public class ChatController {
     public ResponseEntity<?> findMessage ( @PathVariable String id) {
         return ResponseEntity
                 .ok(chatMessageService.findById(id));
+    }
+
+    @DeleteMapping("/messages/{id}")
+    public ResponseEntity<?> deleteMessage(@PathVariable String id) {
+        chatMessageService.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/messages/{id}")
+    public ResponseEntity<?> updateMessage(@PathVariable String id, @RequestBody Map<String, String> requestBody) {
+        String content = requestBody.get("content");
+        ChatMessage chatMessage = chatMessageService.findById(id);
+        chatMessage.setContent(content);
+        chatMessageService.save(chatMessage);
+        return ResponseEntity.ok(chatMessage);
+    }
+    @PostMapping("/chat/add")
+    public ResponseEntity<?> addMessage( @RequestBody ChatMessage requestBody) {
+        Optional<String> chatId = chatRoomService
+                .getChatId(requestBody.getSenderId(), requestBody.getRecipientId(), true);
+        requestBody.setChatId(chatId.get());
+        chatMessageService.save(requestBody);
+
+        return ResponseEntity.ok(requestBody);
     }
 }

@@ -1,12 +1,15 @@
 package com.example.workwave.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
 @Entity
 public class ChatMessage {
     @Id
+    @GeneratedValue(generator = "stringIdGenerator")
+    @GenericGenerator(name = "stringIdGenerator", strategy = "com.example.workwave.util.StringIdGenerator")
     private String id;
     private String chatId;
     private String senderId;

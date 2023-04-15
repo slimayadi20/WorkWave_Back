@@ -1,13 +1,17 @@
 package com.example.workwave.entities;
 
 import lombok.Builder;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 @Entity
 @Builder
 public class ChatRoom {
     @Id
+    @GeneratedValue(generator = "stringIdGenerator")
+    @GenericGenerator(name = "stringIdGenerator", strategy = "com.example.workwave.util.StringIdGenerator")
     private String id;
     private String chatId;
     private String senderId;

@@ -56,4 +56,9 @@ public class ChatMessageService {
             repository.save(message);
         }
     }
+
+
+    public void deleteById(String id) {
+        repository.deleteById(id);
+    }
 }

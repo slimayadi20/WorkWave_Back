@@ -3,6 +3,7 @@ package com.example.workwave.configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,11 +16,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
 
     @Autowired
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -44,7 +52,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         ,"/getUser/{{userName}}","/updateUser/{{userName}}","/holiday","/addHoliday","/updateHoliday","/deleteHoliday/{id}","/holidaybyuser/{username}",
                 "/refresh","/PartenaireC/retrieve-partenaire/{Partenaire-id}","/PartenaireC/addPartenaire","/PartenaireC/updatePartenaire","/PartenaireC/deletePartenaire/{partenaire-id}" ,
                         "/OffreC/","/OffreC/retrieve-Offre/{Offre-id}","/OffreC/addOffre","/OffreC/updateOffre","/OffreC/deleteOffre/{Offre-id}",
-                        "/Contrat","/ContratById/{id}","/addContrat","/updateContrat","/deleteContrat/{id}","/messages/{senderId}/{recipientId}/count","/messages/{senderId}/{recipientId}","/messages/{id}","/chat","/ws","/user/{userId}/queue/messages","/app/chat").permitAll()
+                        "/Contrat","/ContratById/{id}","/addContrat","/updateContrat","/deleteContrat/{id}","/messages/{senderId}/{recipientId}/count","/messages/{senderId}/{recipientId}","/messages/{id}","/chat","/ws","/user/{userId}/queue/messages","/app/chat","/ws/chat","user","/chat/add").permitAll()
                 .antMatchers(HttpHeaders.ALLOW).permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -54,6 +62,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         ;
 
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+
     }
 
     @Bean
@@ -65,4 +75,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(jwtService).passwordEncoder(passwordEncoder());
     }
+
+
 }
