@@ -1,2 +1,50 @@
-package com.example.workwave.entities;public class Invoices {
+package com.example.workwave.entities;
+
+import com.fasterxml.jackson.annotation.*;
+import com.example.workwave.entities.Budget;
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+@Entity
+@Table( name = "Invoices")
+
+public class Invoices {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String invoiceNumber;
+
+    private LocalDate issueDate;
+
+    private LocalDate dueDate;
+
+    private BigDecimal amountDue;
+
+    private String status;
+
+    private String description;
+
+    private String createdBy;
+
+    private LocalDateTime createdAt;
+
+    private String updatedBy;
+
+    private LocalDateTime updatedAt;
+
+    // constructors, getters, and setters
+    @ManyToOne
+    private BankAccount bankAccount;
+    public Invoices() {
+        // default constructor
+    }
+
 }

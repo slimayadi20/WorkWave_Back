@@ -43,6 +43,9 @@ public class User {
 
 
 
+    @OneToOne
+    private BankAccount bankAccount;
+
 
     public Gender getGender() {
         return gender;
