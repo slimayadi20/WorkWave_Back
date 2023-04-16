@@ -10,7 +10,6 @@ import java.util.Set;
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Entity
 @Table( name = "BankAccount")
-
 public class BankAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +21,7 @@ public class BankAccount {
 
     private Double balance;
 
-    private Double limit;
+    private Double limitAmount;
 
     private String bankName;
 
@@ -120,12 +119,12 @@ public class BankAccount {
         this.balance = balance;
     }
 
-    public Double getLimit() {
-        return limit;
+    public Double getLimitAmount() {
+        return limitAmount;
     }
 
-    public void setLimit(Double limit) {
-        this.limit = limit;
+    public void setLimitAmount(Double limitAmount) {
+        this.limitAmount = limitAmount;
     }
 
     public String getBankName() {
@@ -144,12 +143,12 @@ public class BankAccount {
         this.status = status;
     }
 
-    public BankAccount(Long id, String accountName, String accountNumber, Double balance, Double limit, String bankName, Boolean status, Budget budget, List<Invoices> invoices, List<Payment> payments, User user, List<Transactions> transactions) {
+    public BankAccount(Long id, String accountName, String accountNumber, Double balance, Double limitAmount, String bankName, Boolean status, Budget budget, List<Invoices> invoices, List<Payment> payments, User user, List<Transactions> transactions) {
         this.id = id;
         this.accountName = accountName;
         this.accountNumber = accountNumber;
         this.balance = balance;
-        this.limit = limit;
+        this.limitAmount = limitAmount;
         this.bankName = bankName;
         this.status = status;
         this.budget = budget;
@@ -166,7 +165,7 @@ public class BankAccount {
                 ", accountName='" + accountName + '\'' +
                 ", accountNumber='" + accountNumber + '\'' +
                 ", balance=" + balance +
-                ", limit=" + limit +
+                ", limitAmount=" + limitAmount +
                 ", bankName='" + bankName + '\'' +
                 ", status=" + status +
                 ", budget=" + budget +
