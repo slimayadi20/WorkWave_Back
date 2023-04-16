@@ -26,6 +26,7 @@ public class HolidayController {
 
     @PostMapping("/addHoliday")
     public String addHoliday(@RequestBody Map<String, Object> payload) {
+
         User user = userRepository.findById(payload.get("username").toString())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         System.out.println("the user");

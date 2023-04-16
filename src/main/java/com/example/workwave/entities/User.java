@@ -1,17 +1,25 @@
 package com.example.workwave.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="userName")
 
 @Entity
 public class User {
     @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    @Column(unique=true)
     private String userName;
     private String nom;
     private String prenom;
@@ -24,6 +32,11 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<holiday> holidays = new ArrayList<>();
+    @ManyToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Project> projet;
+    public User() {
+
+    }
 
 
     public List<holiday> getHolidays() {
@@ -116,4 +129,33 @@ public class User {
         this.fileName = fileName;
     }
 
+
+    public Set<Project> getProjet() {
+        return projet;
+    }
+
+    public void setProjet(Set<Project> projet) {
+        this.projet = projet;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public User(int id, String userName, String nom, String prenom, String password, String email, String fileName, Gender gender, int phoneNumber, Set<Role> role) {
+        this.id = id;
+        this.userName = userName;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.password = password;
+        this.email = email;
+        this.fileName = fileName;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+    }
 }

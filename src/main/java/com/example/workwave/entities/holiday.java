@@ -16,6 +16,7 @@ public class holiday implements Serializable {
     private Long id;
     private String description;
     private String etat;
+
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date dateEmission;
