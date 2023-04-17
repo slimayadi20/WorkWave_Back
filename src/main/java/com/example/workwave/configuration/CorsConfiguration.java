@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 
-//@Configuration
+@Configuration
 
 public class CorsConfiguration {
    private static final String GET = "GET";
@@ -24,11 +24,10 @@ public class CorsConfiguration {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedMethods(GET, POST, PUT, DELETE,OPTIONS,HEAD,PATCH)
+                        .allowedMethods(GET , POST , PUT , DELETE , OPTIONS , HEAD , PATCH)
                         .allowedHeaders("*")
                         .allowedOrigins("*")
-                        .allowedOriginPatterns("*")
-                        .allowCredentials(true);
+                        .allowCredentials(false);
             }
         };
     }

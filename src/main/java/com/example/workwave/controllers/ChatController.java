@@ -38,8 +38,7 @@ public class ChatController {
         Optional<String> chatId = chatRoomService
                 .getChatId(chatMessage.getSenderId(), chatMessage.getRecipientId(), true);
         chatMessage.setChatId(chatId.get());
-        System.out.println(chatMessage);
-        System.out.println(chatId);
+        System.out.println("Received message: " + chatMessage.getContent());
 
         ChatMessage saved = chatMessageService.save(chatMessage);
         messagingTemplate.convertAndSendToUser(
@@ -96,3 +95,21 @@ public class ChatController {
         return ResponseEntity.ok(requestBody);
     }
 }
+
+/*
+
+    public void processMessage(@Payload ChatMessage chatMessage) {//} -> core method
+
+@MessageMapping("/chat") : Cette annotation indique que cette méthode doit être exécutée chaque fois qu'un message avec la destination "/chat" est reçu.
+
+public void processMessage(@Payload ChatMessage chatMessage) : Cette méthode prend en entrée un objet de type ChatMessage, qui est le message envoyé par l'utilisateur.
+
+Optional<String> chatId = chatRoomService.getChatId(chatMessage.getSenderId(), chatMessage.getRecipientId(), true); : Cette ligne de code utilise le chatRoomService pour récupérer l'ID de la conversation entre l'expéditeur et le destinataire du message.
+
+chatMessage.setChatId(chatId.get()); : Cette ligne de code défini l'ID de la conversation pour le chatMessage.
+
+ChatMessage saved = chatMessageService.save(chatMessage); : Cette ligne de code sauvegarde le chatMessage dans la base de données.
+
+messagingTemplate.convertAndSendToUser(chatMessage.getRecipientId(),"/queue/messages", new ChatNotification(saved.getId(), saved.getSenderId(), saved.getSenderName())); : Cette ligne envoie une notification de nouveau message à l'utilisateur destinataire, en utilisant la méthode convertAndSendToUser() de l'objet messagingTemplate. Cette notification contient l'ID, l'expéditeur et le nom de l'expéditeur du message sauvegardé dans la base de données.
+
+ */
