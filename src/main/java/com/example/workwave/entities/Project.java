@@ -31,7 +31,7 @@ public class Project {
     @ManyToMany( fetch = FetchType.LAZY)
     @JoinTable(name = "project_user",
             joinColumns = { @JoinColumn(name = "projet_id", referencedColumnName = "id")},
-            inverseJoinColumns = { @JoinColumn(name = "user_user_name", referencedColumnName = "id") })
+            inverseJoinColumns = { @JoinColumn(name = "user_user_name", referencedColumnName = "userName") })
     private Set<User> user;
 
     public Long getId() {

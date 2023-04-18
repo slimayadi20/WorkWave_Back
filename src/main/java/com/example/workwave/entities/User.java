@@ -16,9 +16,6 @@ import java.util.Set;
 @Entity
 public class User {
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
     @Column(unique=true)
     private String userName;
     private String nom;
@@ -29,11 +26,17 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private int phoneNumber;
+    @Column(name = "token")
+    private String token;
+
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<holiday> holidays = new ArrayList<>();
     @ManyToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Project> projet;
+
+
     public User() {
 
     }
@@ -55,6 +58,13 @@ public class User {
     private Set<Role> role;
 
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String Token) {
+        this.token = Token;
+    }
 
 
     public Gender getGender() {
@@ -138,16 +148,8 @@ public class User {
         this.projet = projet;
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public User(int id, String userName, String nom, String prenom, String password, String email, String fileName, Gender gender, int phoneNumber, Set<Role> role) {
-        this.id = id;
+    public User( String userName, String nom, String prenom, String password, String email, String fileName, Gender gender, int phoneNumber, Set<Role> role) {
         this.userName = userName;
         this.nom = nom;
         this.prenom = prenom;

@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -31,17 +32,30 @@ public class JwtService implements UserDetailsService {
    @Autowired
    private AuthenticationManager authenticationManager;
     UserServiceImpl userService ;
-   public JwtResponse createJwtToken(JwtRequest jwtRequest) throws Exception {
-       String userName = jwtRequest.getUserName();
-       String userPassword = jwtRequest.getPassword();
-       authenticate(userName, userPassword);
 
-       UserDetails userDetails = loadUserByUsername(userName);
-       String newGeneratedToken = jwtUtil.generateToken(userDetails);
+    public JwtResponse createJwtToken(JwtRequest jwtRequest) throws Exception {
+        String userName = jwtRequest.getUserName();
+        Optional<User> userOptional = userRepository.findById(userName);
 
-       User user = userRepository.findById(userName).get();
-       return new JwtResponse(user, newGeneratedToken);
-   }
+        if( userOptional.get().getToken() != null){
+            // If the user already has a token, return it
+            System.out.println("user not logged in");
+            return new JwtResponse(userOptional.get(), userOptional.get().getToken());
+        } else {
+            String userPassword = jwtRequest.getPassword();
+
+            User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            authenticate(userName, userPassword);
+
+            System.out.println("user  logged in");
+
+            UserDetails userDetails = loadUserByUsername(userName);
+            String newGeneratedToken = jwtUtil.generateToken(userDetails);
+
+            return new JwtResponse(user, newGeneratedToken);
+        }
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findById(username).get();
