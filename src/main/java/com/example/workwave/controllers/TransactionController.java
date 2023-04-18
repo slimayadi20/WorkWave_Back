@@ -6,11 +6,9 @@ import com.example.workwave.repositories.*;
 import com.example.workwave.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import java.util.List;
-import java.util.Map;
+
 @RestController
 public class TransactionController {
     @Autowired
@@ -21,9 +19,24 @@ public class TransactionController {
     TransactionServiceImpl transactionService;
 
     @PostMapping("/addTransaction")
-    public String addTransaction(@RequestBody Transactions transactions) {
-        return transactionService.addTransaction(transactions);
+    public String addTransaction(Transactions transaction) {
+        BankAccount bankAccount = bankAccountRepository.findById(transaction.getBankAccount().getId())
+                .orElseThrow(() -> new RuntimeException("Bank account not found"));
+
+        double newBalance = bankAccount.getBalance() + transaction.getAmount();
+
+        if (newBalance > bankAccount.getLimitAmount()) {
+            newBalance = bankAccount.getLimitAmount();
+        }
+
+        bankAccount.setBalance(newBalance);
+        bankAccountRepository.save(bankAccount);
+
+        transactionRepository.save(transaction);
+
+        return "Transaction added successfully";
     }
+
 
     @DeleteMapping("/deleteTransaction/{id}")
     public String deleteTransaction(@PathVariable long id) {
@@ -44,5 +57,15 @@ public class TransactionController {
     public Transactions getTransactionById(@PathVariable Long id) {
         return transactionService.getTransactionById(id);
     }
+    @GetMapping("/TransactionsByBankAccount/{id}")
+    public List<Transactions> getTransactionByBankAccount(@PathVariable long id) {
+        BankAccount bankAccount = bankAccountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bank Account not found"));
 
+        List<Transactions> transactions = transactionRepository.findByBankAccount(bankAccount);
+        if (transactions == null) {
+            throw new RuntimeException("Transaction not found for Bank Account");
+        }
+        return transactions;
+    }
 }

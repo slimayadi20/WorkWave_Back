@@ -24,6 +24,10 @@ public class Transactions {
     @ManyToOne
     private BankAccount bankAccount;
 
+    public Transactions() {
+
+    }
+
     public Long getId() {
         return id;
     }

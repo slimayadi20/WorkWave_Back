@@ -21,9 +21,9 @@ public class Payment {
 
     private String paymentNumber;
 
-    private LocalDate paymentDate;
+    private Date paymentDate;
 
-    private BigDecimal amountPaid;
+    private Double amountPaid;
 
     private String description;
 
@@ -35,6 +35,10 @@ public class Payment {
 
     @ManyToOne
     private BankAccount bankAccount;
+
+    public Payment() {
+
+    }
 
     public Long getId() {
         return id;
@@ -52,19 +56,19 @@ public class Payment {
         this.paymentNumber = paymentNumber;
     }
 
-    public LocalDate getPaymentDate() {
+    public Date getPaymentDate() {
         return paymentDate;
     }
 
-    public void setPaymentDate(LocalDate paymentDate) {
+    public void setPaymentDate(Date paymentDate) {
         this.paymentDate = paymentDate;
     }
 
-    public BigDecimal getAmountPaid() {
+    public Double getAmountPaid() {
         return amountPaid;
     }
 
-    public void setAmountPaid(BigDecimal amountPaid) {
+    public void setAmountPaid(Double amountPaid) {
         this.amountPaid = amountPaid;
     }
 
@@ -108,7 +112,7 @@ public class Payment {
         this.bankAccount = bankAccount;
     }
 
-    public Payment(Long id, String paymentNumber, LocalDate paymentDate, BigDecimal amountPaid, String description, String status, String createdBy, LocalDateTime createdAt, BankAccount bankAccount) {
+    public Payment(Long id, String paymentNumber, Date paymentDate, Double amountPaid, String description, String status, String createdBy, LocalDateTime createdAt, BankAccount bankAccount) {
         this.id = id;
         this.paymentNumber = paymentNumber;
         this.paymentDate = paymentDate;

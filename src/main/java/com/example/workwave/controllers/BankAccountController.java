@@ -97,5 +97,16 @@ public class BankAccountController {
     public BankAccount getBankAccountById(@PathVariable Long id) {
         return bankAccountService.getBankAccountById(id);
     }
-
+    @GetMapping("/BankAccountByUser/{userName}")
+    public BankAccount getBankAccountByUser(@PathVariable String userName) {
+        User user = userRepository.findById(userName)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        System.out.println(user.getUserName());
+        BankAccount bankAccount = bankAccountRepository.findByUserUserName(user.getUserName());
+        if (bankAccount == null) {
+            throw new RuntimeException("Bank account not found for user");
+        }
+        System.out.println(bankAccount.getAccountName());
+        return bankAccount;
+    }
 }

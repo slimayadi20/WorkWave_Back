@@ -1,11 +1,7 @@
 package com.example.workwave.controllers;
 
-import com.example.workwave.entities.BankAccount;
+import com.example.workwave.entities.*;
 
-import com.example.workwave.entities.Budget;
-import com.example.workwave.entities.User;
-
-import com.example.workwave.entities.holiday;
 import com.example.workwave.repositories.BankAccountRepository;
 import com.example.workwave.repositories.BudgetRepository;
 import com.example.workwave.repositories.ProjectRepository;
@@ -27,6 +23,8 @@ public class BudgetController {
     BudgetRepository budgetRepository;
     @Autowired
     ProjectRepository projectRepository;
+    @Autowired
+    BankAccountRepository bankAccountRepository;
     @Autowired
     BudgetServiceImpl budgetService;
 
@@ -54,6 +52,27 @@ public class BudgetController {
     public Budget getBudgetById(@PathVariable Long id) {
         return budgetService.getBudgetById(id);
     }
+    @GetMapping("/BudgetByBankAccount/{id}")
+    public Budget getBudgetByBankAccount(@PathVariable long id) {
+        BankAccount bankAccount = bankAccountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bank Account not found"));
 
+        Budget budget = budgetRepository.getBudgetByBankAccount(bankAccount);
+        if (budget == null) {
+            throw new RuntimeException("Budget not found for Bank Account");
+        }
+        return budget;
+    }
+    @GetMapping("/BudgetByProject/{id}")
+    public Budget getBudgetByProject(@PathVariable long id) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
+        Budget budget = budgetRepository.getBudgetByProject(project);
+        if (budget == null) {
+            throw new RuntimeException("Budget not found for Project");
+        }
+        return budget;
+    }
 }
 

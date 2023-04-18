@@ -145,20 +145,7 @@ public class BankAccount  {
         this.status = status;
     }
 
-    public BankAccount(Long id, String accountName, String accountNumber, Double balance, Double limitAmount, String bankName, Boolean status, List<Budget> budget, List<Invoices> invoices, List<Payment> payments, User user, List<Transactions> transactions) {
-        this.id = id;
-        this.accountName = accountName;
-        this.accountNumber = accountNumber;
-        this.balance = balance;
-        this.limitAmount = limitAmount;
-        this.bankName = bankName;
-        this.status = status;
-        this.budget = budget;
-        this.invoices = invoices;
-        this.payments = payments;
-        this.user = user;
-        this.transactions = transactions;
-    }
+
 
     @Override
     public String toString() {

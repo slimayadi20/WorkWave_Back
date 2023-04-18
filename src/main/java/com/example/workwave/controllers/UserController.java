@@ -22,10 +22,10 @@ public class UserController {
     UserRepository userRepository;
 
 
-  // @PostConstruct //lors de l'execution
-  // public void initRoleAndUser() {
-  //     userService.initRolesAndUser();
-  // }
+ //  @PostConstruct //lors de l'execution
+ // public void initRoleAndUser() {
+ //     userService.initRolesAndUser();
+ //  }
 
 
     @GetMapping(path = "/ImgUsers/{userName}")

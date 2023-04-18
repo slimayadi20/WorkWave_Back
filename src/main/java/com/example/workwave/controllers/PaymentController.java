@@ -23,12 +23,47 @@ public class PaymentController {
     BankAccountRepository bankAccountRepository;
     @Autowired
     PaymentServiceImpl paymentService;
+    @Autowired
+    TransactionRepository transactionRepository;
 
     @PostMapping("/addPayment")
-    public String addPayment(@RequestBody Payment payment) {
-        return paymentService.addPayment(payment);
-    }
+    public String addPayment(@RequestParam Long senderAccountId, @RequestBody Payment payment) {
+        // Get the sender bank account from the database
+        BankAccount senderAccount = bankAccountRepository.findById(senderAccountId).orElse(null);
+        if (senderAccount == null) {
+            return "Error: sender bank account not found.";
+        }
 
+        BankAccount receiverAccount = payment.getBankAccount();
+        if (receiverAccount == null) {
+            return "Error: receiver bank account not specified.";
+        }
+
+        Double senderNewBalance = senderAccount.getBalance() - payment.getAmountPaid();
+        Double receiverNewBalance = receiverAccount.getBalance() + payment.getAmountPaid();
+
+        senderAccount.setBalance(senderNewBalance);
+        bankAccountRepository.save(senderAccount);
+
+        receiverAccount.setBalance(receiverNewBalance);
+        bankAccountRepository.save(receiverAccount);
+
+        // Create a new transaction
+        Transactions transaction = new Transactions();
+        transaction.setAmount(payment.getAmountPaid());
+        transaction.setBankAccount(senderAccount);
+        transaction.setDescription(payment.getDescription());
+        transaction.setTransactionDate(payment.getPaymentDate());
+
+
+        transactionRepository.save(transaction);
+
+        // Save the payment to the database
+        payment.setBankAccount(senderAccount);
+        paymentRepository.save(payment);
+
+        return "Payment added successfully.";
+    }
     @DeleteMapping("/deletePayment/{id}")
     public String deletePayment(@PathVariable long id) {
         return paymentService.deletePayment(id);
@@ -49,4 +84,12 @@ public class PaymentController {
         return paymentService.getPaymentById(id);
     }
 
+
+    @GetMapping("/PaymentsByBankAccount/{idBankAccount}")
+    public List<Payment> getPaymentByBankAccount(@PathVariable long idBankAccount) {
+        BankAccount bankAccount = bankAccountRepository.findById(idBankAccount)
+                .orElseThrow(() -> new RuntimeException("BankAccount not found"));
+
+        return paymentRepository.findByBankAccount(bankAccount);
+    }
 }

@@ -1,6 +1,9 @@
 package com.example.workwave.services;
 
+import com.example.workwave.entities.BankAccount;
 import com.example.workwave.entities.Budget;
+import com.example.workwave.entities.Payment;
+import com.example.workwave.entities.Project;
 import com.example.workwave.repositories.BudgetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,5 +59,13 @@ public class BudgetServiceImpl {
             throw new EntityNotFoundException("Bank Account not found with id " + id);
         }
     }
+
+    public Budget GetBudgetByBankAccount(BankAccount bankAccount) {
+        return budgetRepository.getBudgetByBankAccount(bankAccount);
+    }
+    public Budget GetBudgetByProject(Project project) {
+        return budgetRepository.getBudgetByProject(project);
+    }
+
 
 }

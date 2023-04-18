@@ -1,5 +1,6 @@
 package com.example.workwave.services;
 
+import com.example.workwave.entities.BankAccount;
 import com.example.workwave.entities.Payment;
 import com.example.workwave.entities.Transactions;
 import com.example.workwave.repositories.BudgetRepository;
@@ -57,5 +58,7 @@ public class TransactionServiceImpl {
             throw new EntityNotFoundException("Transaction not found with id " + id);
         }
     }
-
+    public List<Transactions> GetTransactionsByBankAccount(BankAccount bankAccount) {
+        return transactionRepository.findByBankAccount(bankAccount);
+    }
 }
