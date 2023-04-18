@@ -9,6 +9,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -94,7 +95,19 @@ public class ChatController {
 
         return ResponseEntity.ok(requestBody);
     }
+    @DeleteMapping("/chatRoom/{id}")
+    public ResponseEntity<?> deleteChatRoom(@PathVariable String id) {
+        chatRoomService.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+    @DeleteMapping("/chatRoomD/{chatId}")
+
+    public ResponseEntity<?> deleteChatRoomsChatId(@PathVariable String chatId) {
+        chatRoomService.deleteByChatId(chatId);
+        return ResponseEntity.ok().build();
+    }
 }
+//DELETE A CONVERSATION
 
 /*
 

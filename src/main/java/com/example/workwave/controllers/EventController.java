@@ -26,10 +26,10 @@ class EventController {
     public List<Event> events() {
         return eventRespository.findAll();
     }
-/*
-    @RequestMapping(value="/events", method=RequestMethod.GET)
-    public List<Event> getEventsInRange(@RequestParam(value = "start", required = true) String start,
-                                        @RequestParam(value = "end", required = true) String end) {
+
+    @RequestMapping(value="/events/{start}/{end}", method=RequestMethod.GET)
+    public List<Event> getEventsInRange(@PathVariable(value = "start", required = true) String start,
+                                        @PathVariable(value = "end", required = true) String end) {
         Date startDate = null;
         Date endDate = null;
         SimpleDateFormat inputDateFormat=new SimpleDateFormat("yyyy-MM-dd");
@@ -54,7 +54,7 @@ class EventController {
 
         return eventRespository.findByDateBetween(startDateTime, endDateTime);
     }
-*/
+
     /*CRUD OPERATIONS*/
 
     @RequestMapping(value="/event", method=RequestMethod.POST)

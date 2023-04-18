@@ -5,7 +5,9 @@ import com.example.workwave.repositories.ChatRoomRepository;
 import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,6 +42,19 @@ public class ChatRoomService {
             chatRoomRepository.save(recipientSender);
 
             return Optional.of(chatId);
+        }
+    }
+
+    public void deleteById(String id) {
+        chatRoomRepository.deleteById(id);
+    }
+
+    public void deleteByChatId(String chatId) {
+        List<ChatRoom> Rooms = chatRoomRepository.findChatRoomsByChatId(chatId);
+        for (ChatRoom c:Rooms) {
+
+            chatRoomRepository.deleteById(c.getId());
+
         }
     }
 }
