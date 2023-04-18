@@ -46,34 +46,34 @@ public class UserServiceImpl {
     ServletContext context;
 
 
-   // public void initRolesAndUser(){
-   //     Role adminRole=new Role();
-   //     adminRole.setRoleName("Admin");
-   //     adminRole.setRoleDescription("Admin role");
-   //     roleRepository.save(adminRole);
-//
-   //     Role etudiantRole=new Role();
-   //     etudiantRole.setRoleName("Project manager");
-   //     etudiantRole.setRoleDescription("Project manager role");
-   //     roleRepository.save(etudiantRole);
-//
-   //     //Ajout de l'admin dans la base
-   //     User adminUser = new User();
-   //     adminUser.setFileName("imagecv.jpg");
-   //     adminUser.setPrenom("slim");
-   //     adminUser.setNom("ayadi");
-   //     adminUser.setEmail("slim.ayadi@esprit.tn");
-   //     adminUser.setPassword(getEncodedPassword("slim"));
-   //     adminUser.setUserName("slimayadi");
-   //     adminUser.setGender(Gender.MALE);
-   //     adminUser.setPhoneNumber(26821820);
-   //     Set<Role> adminRoles = new HashSet<>();
-   //     adminRoles.add(adminRole);
-   //     adminUser.setRole(adminRoles);
-   //     userRepository.save(adminUser);
-//
-//
-   // }
+public void initRolesAndUser(){
+    Role adminRole=new Role();
+    adminRole.setRoleName("Admin");
+    adminRole.setRoleDescription("Admin role");
+    roleRepository.save(adminRole);
+
+    Role etudiantRole=new Role();
+    etudiantRole.setRoleName("Project manager");
+    etudiantRole.setRoleDescription("Project manager role");
+    roleRepository.save(etudiantRole);
+
+    //Ajout de l'admin dans la base
+    User adminUser = new User();
+    adminUser.setFileName("imagecv.jpg");
+    adminUser.setPrenom("slim");
+    adminUser.setNom("ayadi");
+    adminUser.setEmail("slim.ayadi@esprit.tn");
+    adminUser.setPassword(getEncodedPassword("slim"));
+    adminUser.setUserName("slimayadi");
+    adminUser.setGender(Gender.MALE);
+    adminUser.setPhoneNumber(26821820);
+    Set<Role> adminRoles = new HashSet<>();
+    adminRoles.add(adminRole);
+    adminUser.setRole(adminRoles);
+    userRepository.save(adminUser);
+
+
+}
 
     public String getEncodedPassword(String password) {
         return passwordEncoder.encode(password);

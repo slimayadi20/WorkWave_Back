@@ -4,12 +4,13 @@ import com.example.workwave.entities.Payment;
 import com.example.workwave.repositories.BudgetRepository;
 import com.example.workwave.repositories.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.ServletContext;
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class PaymentServiceImpl {
     @Autowired
     PaymentRepository paymentRepository;

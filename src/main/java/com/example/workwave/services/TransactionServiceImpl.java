@@ -6,11 +6,13 @@ import com.example.workwave.repositories.BudgetRepository;
 import com.example.workwave.repositories.PaymentRepository;
 import com.example.workwave.repositories.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.ServletContext;
 import java.util.List;
 import java.util.Optional;
+@Service
 public class TransactionServiceImpl {
 
     @Autowired

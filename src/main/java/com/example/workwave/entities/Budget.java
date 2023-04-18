@@ -28,7 +28,7 @@ public class Budget {
 
     private String notes;
 
-    @OneToOne
+    @ManyToOne
     private BankAccount bankAccount;
 
     @OneToOne(mappedBy = "budget")

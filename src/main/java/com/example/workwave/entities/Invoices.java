@@ -13,11 +13,11 @@ import java.util.Set;
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Entity
 @Table( name = "Invoices")
-
 public class Invoices {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
 
     private String invoiceNumber;
@@ -40,11 +40,122 @@ public class Invoices {
 
     private LocalDateTime updatedAt;
 
-    // constructors, getters, and setters
+
+    @JsonBackReference
     @ManyToOne
     private BankAccount bankAccount;
     public Invoices() {
-        // default constructor
+
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+
+    public LocalDate getIssueDate() {
+        return issueDate;
+    }
+
+    public void setIssueDate(LocalDate issueDate) {
+        this.issueDate = issueDate;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public BigDecimal getAmountDue() {
+        return amountDue;
+    }
+
+    public void setAmountDue(BigDecimal amountDue) {
+        this.amountDue = amountDue;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public BankAccount getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
+    }
+
+    public Invoices(Long id, String invoiceNumber, LocalDate issueDate, LocalDate dueDate, BigDecimal amountDue, String status, String description, String createdBy, LocalDateTime createdAt, String updatedBy, LocalDateTime updatedAt, BankAccount bankAccount) {
+        this.id = id;
+        this.invoiceNumber = invoiceNumber;
+        this.issueDate = issueDate;
+        this.dueDate = dueDate;
+        this.amountDue = amountDue;
+        this.status = status;
+        this.description = description;
+        this.createdBy = createdBy;
+        this.createdAt = createdAt;
+        this.updatedBy = updatedBy;
+        this.updatedAt = updatedAt;
+        this.bankAccount = bankAccount;
+    }
 }

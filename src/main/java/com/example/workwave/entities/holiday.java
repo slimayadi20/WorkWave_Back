@@ -25,7 +25,6 @@ public class holiday implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference
-
     private User user;
 
     public holiday(Long id, String description, String etat, Date dateEmission, Date dateExpiration, User user) {

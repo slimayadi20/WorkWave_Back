@@ -22,26 +22,26 @@ import java.util.Set;
 
 @Service
 public class JwtService implements UserDetailsService {
-   @Autowired
+    @Autowired
     private UserRepository userRepository;
 
-   @Autowired
-   JwtUtil jwtUtil;
+    @Autowired
+    JwtUtil jwtUtil;
 
-   @Autowired
-   private AuthenticationManager authenticationManager;
+    @Autowired
+    private AuthenticationManager authenticationManager;
     UserServiceImpl userService ;
-   public JwtResponse createJwtToken(JwtRequest jwtRequest) throws Exception {
-       String userName = jwtRequest.getUserName();
-       String userPassword = jwtRequest.getPassword();
-       authenticate(userName, userPassword);
+    public JwtResponse createJwtToken(JwtRequest jwtRequest) throws Exception {
+        String userName = jwtRequest.getUserName();
+        String userPassword = jwtRequest.getPassword();
+        authenticate(userName, userPassword);
 
-       UserDetails userDetails = loadUserByUsername(userName);
-       String newGeneratedToken = jwtUtil.generateToken(userDetails);
+        UserDetails userDetails = loadUserByUsername(userName);
+        String newGeneratedToken = jwtUtil.generateToken(userDetails);
 
-       User user = userRepository.findById(userName).get();
-       return new JwtResponse(user, newGeneratedToken);
-   }
+        User user = userRepository.findById(userName).get();
+        return new JwtResponse(user, newGeneratedToken);
+    }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findById(username).get();

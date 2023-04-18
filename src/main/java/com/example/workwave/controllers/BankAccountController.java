@@ -2,12 +2,11 @@ package com.example.workwave.controllers;
 
 import com.example.workwave.entities.BankAccount;
 
+import com.example.workwave.entities.Budget;
 import com.example.workwave.entities.User;
 
 import com.example.workwave.entities.holiday;
-import com.example.workwave.repositories.BankAccountRepository;
-import com.example.workwave.repositories.ProjectRepository;
-import com.example.workwave.repositories.UserRepository;
+import com.example.workwave.repositories.*;
 import com.example.workwave.services.BankAccountServiceImpl;
 import com.example.workwave.services.ProjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+@RestController
 public class BankAccountController {
     @Autowired
     BankAccountRepository bankAccountRepository;
@@ -24,15 +24,63 @@ public class BankAccountController {
     UserRepository userRepository;
     @Autowired
     BankAccountServiceImpl bankAccountService;
+    @Autowired
+    BudgetRepository budgetRepository;
+    @Autowired
+    InvoicesRepository invoicesRepository;
+    @Autowired
+    PaymentRepository paymentRepository;
+    @Autowired
+    TransactionRepository transactionRepository;
 
     @PostMapping("/addBankAccount")
-    public String addBankAccount(@RequestBody BankAccount bankAccount) {
+    public String addBankAccount(@RequestBody
+    BankAccount bankAccount) {
+        bankAccountRepository.save(bankAccount);
+
+        // If the bank account has a user, update the user entity with the new bank account
+        if (bankAccount.getUser() != null) {
+            User user = userRepository.findById(bankAccount.getUser().getUserName())
+                    .orElseThrow(() -> new IllegalArgumentException("No user found with userName: " + bankAccount.getUser().getUserName()));
+            user.setBankAccount(bankAccount);
+            userRepository.save(user);
+        }
         return bankAccountService.addBankAccount(bankAccount);
+
     }
 
     @DeleteMapping("/deleteBankAccount/{id}")
     public String deleteBankAccount(@PathVariable long id) {
-        return bankAccountService.deleteBankAccount(id);
+        BankAccount bankAccount = bankAccountRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid bank account ID: " + id));
+
+        // Check if there are any related entities with foreign key constraints
+        if (!bankAccount.getBudget().isEmpty() ||
+                !bankAccount.getInvoices().isEmpty() ||
+                !bankAccount.getPayments().isEmpty() ||
+                !bankAccount.getTransactions().isEmpty() ||
+                bankAccount.getUser() != null) {
+            // Delete related entities first
+            bankAccount.getBudget().forEach(budget -> budgetRepository.delete(budget));
+            bankAccount.getInvoices().forEach(invoice -> invoicesRepository.delete(invoice));
+            bankAccount.getPayments().forEach(payment -> paymentRepository.delete(payment));
+            bankAccount.getTransactions().forEach(transaction -> transactionRepository.delete(transaction));
+            if (bankAccount.getUser() != null) {
+                // Find the user that has the bank account
+                User user = userRepository.findByBankAccount(bankAccount);
+
+                // Set the BankAccount field to null
+                user.setBankAccount(null);
+
+                // Save the updated user entity
+                userRepository.save(user);
+            }
+        }
+
+        // Delete the bank account entity
+        bankAccountRepository.delete(bankAccount);
+
+        return "Bank account removed: " + id;
     }
 
     @PutMapping("/updateBankAccount")

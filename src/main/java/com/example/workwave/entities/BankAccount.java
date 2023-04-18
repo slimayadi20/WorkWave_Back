@@ -10,9 +10,11 @@ import java.util.Set;
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Entity
 @Table( name = "BankAccount")
-public class BankAccount {
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler","Invoices"})
+public class BankAccount  {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
 
     private String accountName;
@@ -27,9 +29,9 @@ public class BankAccount {
 
     private Boolean status;
 
-    @OneToOne(mappedBy = "bankAccount")
-    private Budget budget;
-
+    @OneToMany(mappedBy = "bankAccount")
+    private List<Budget> budget;
+    @JsonManagedReference
     @OneToMany(mappedBy = "bankAccount")
     private List<Invoices> invoices;
 
@@ -69,11 +71,11 @@ public class BankAccount {
         this.payments = payments;
     }
 
-    public Budget getBudget() {
+    public List<Budget> getBudget() {
         return budget;
     }
 
-    public void setBudget(Budget budget) {
+    public void setBudget(List<Budget> budget) {
         this.budget = budget;
     }
 
@@ -143,7 +145,7 @@ public class BankAccount {
         this.status = status;
     }
 
-    public BankAccount(Long id, String accountName, String accountNumber, Double balance, Double limitAmount, String bankName, Boolean status, Budget budget, List<Invoices> invoices, List<Payment> payments, User user, List<Transactions> transactions) {
+    public BankAccount(Long id, String accountName, String accountNumber, Double balance, Double limitAmount, String bankName, Boolean status, List<Budget> budget, List<Invoices> invoices, List<Payment> payments, User user, List<Transactions> transactions) {
         this.id = id;
         this.accountName = accountName;
         this.accountNumber = accountNumber;

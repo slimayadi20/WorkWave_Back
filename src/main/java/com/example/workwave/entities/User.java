@@ -15,11 +15,8 @@ import java.util.Set;
 
 @Entity
 public class User {
+
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column(unique=true)
     private String userName;
     private String nom;
     private String prenom;
@@ -147,16 +144,8 @@ public class User {
         this.projet = projet;
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public User(int id, String userName, String nom, String prenom, String password, String email, String fileName, Gender gender, int phoneNumber, List<holiday> holidays, Set<Project> projet, Set<Role> role, BankAccount bankAccount) {
-        this.id = id;
+    public User(String userName, String nom, String prenom, String password, String email, String fileName, Gender gender, int phoneNumber, List<holiday> holidays, Set<Project> projet, Set<Role> role, BankAccount bankAccount) {
         this.userName = userName;
         this.nom = nom;
         this.prenom = prenom;
