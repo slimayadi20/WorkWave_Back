@@ -16,9 +16,6 @@ import java.util.Set;
 @Entity
 public class User {
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
     @Column(unique=true)
     private String userName;
     private String nom;
@@ -29,11 +26,25 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private int phoneNumber;
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken;
+
+
+
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<holiday> holidays = new ArrayList<>();
+
+
     @ManyToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Project> projet;
+
+    @ManyToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Task> tasks;
+
+
+
     public User() {
 
     }
@@ -55,6 +66,13 @@ public class User {
     private Set<Role> role;
 
 
+    public String getResetPasswordToken() {
+        return resetPasswordToken;
+    }
+
+    public void setResetPasswordToken(String resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
+    }
 
 
     public Gender getGender() {
@@ -130,24 +148,24 @@ public class User {
     }
 
 
-    public Set<Project> getProjet() {
+  /*  public Set<Project> getProjet() {
         return projet;
-    }
+    }*/
 
     public void setProjet(Set<Project> projet) {
         this.projet = projet;
     }
 
-    public int getId() {
-        return id;
+
+    public Set<Task> getTasks() {
+        return tasks;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = tasks;
     }
 
-    public User(int id, String userName, String nom, String prenom, String password, String email, String fileName, Gender gender, int phoneNumber, Set<Role> role) {
-        this.id = id;
+    public User(String userName, String nom, String prenom, String password, String email, String fileName, Gender gender, int phoneNumber, Set<Role> role) {
         this.userName = userName;
         this.nom = nom;
         this.prenom = prenom;

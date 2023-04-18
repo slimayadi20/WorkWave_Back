@@ -30,7 +30,7 @@ public class ProjectServiceImpl {
 
     public String deleteProject(Long idProject) {
         projectRepository.deleteById(idProject);
-        return "Certif removed !! " + idProject;
+        return "project removed !! " + idProject;
     }
 
 
