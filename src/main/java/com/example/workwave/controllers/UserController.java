@@ -64,18 +64,14 @@ public class UserController {
     public Page<User> showPage(@RequestParam(defaultValue = "0") int page) {
         return userRepository.findAll(PageRequest.of(page, 4));
     }*/
-
-
     @PostMapping({"/registerNewUser"})
     public ResponseEntity<Map<String, String>> registerNewUser(@RequestBody User user) throws JsonProcessingException {
         return userService.registerNewUser(user);
     }
-
     @PutMapping("/updateUser/{userName}")
     public User updateUser(@RequestBody User user, @PathVariable("userName") String userName) {
         return userService.updateUser(user, userName);
     }
-
     @GetMapping(path = "/getUser/{userName}")
     public User getUserByUsername(@PathVariable("userName") String userName) throws Exception {
         return userService.GetUserByUsername(userName);
