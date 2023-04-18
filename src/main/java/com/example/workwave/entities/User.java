@@ -17,6 +17,7 @@ import java.util.Set;
 public class User {
 
     @Id
+    @Column(unique=true)
     private String userName;
     private String nom;
     private String prenom;
@@ -26,11 +27,17 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private int phoneNumber;
+    @Column(name = "token")
+    private String token;
+
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<holiday> holidays = new ArrayList<>();
     @ManyToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Project> projet;
+
+
     public User() {
 
     }
@@ -52,8 +59,13 @@ public class User {
     private Set<Role> role;
 
 
-    @OneToOne
-    private BankAccount bankAccount;
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String Token) {
+        this.token = Token;
+    }
 
     public BankAccount getBankAccount() {
         return bankAccount;
@@ -145,7 +157,7 @@ public class User {
     }
 
 
-    public User(String userName, String nom, String prenom, String password, String email, String fileName, Gender gender, int phoneNumber, List<holiday> holidays, Set<Project> projet, Set<Role> role, BankAccount bankAccount) {
+    public User( String userName, String nom, String prenom, String password, String email, String fileName, Gender gender, int phoneNumber, Set<Role> role) {
         this.userName = userName;
         this.nom = nom;
         this.prenom = prenom;

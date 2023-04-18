@@ -44,7 +44,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         ,"/getUser/{{userName}}","/updateUser/{{userName}}","/holiday","/addHoliday","/updateHoliday","/deleteHoliday/{id}","/holidaybyuser/{username}",
                 "/refresh","/PartenaireC/retrieve-partenaire/{Partenaire-id}","/PartenaireC/addPartenaire","/PartenaireC/updatePartenaire","/PartenaireC/deletePartenaire/{partenaire-id}" ,
                         "/OffreC/","/OffreC/retrieve-Offre/{Offre-id}","/OffreC/addOffre","/OffreC/updateOffre","/OffreC/deleteOffre/{Offre-id}",
-                        "/Contrat","/ContratById/{id}","/addContrat","/updateContrat","/deleteContrat/{id}","/BankAccount","/addBankAccount","/**").permitAll()
+                        "/Project","/Project/{id}","/addProject","/updateProject","/deleteProject/{id}","/reset_password","/reset","/usernames","/otp","/activate/{token}").permitAll()
                 .antMatchers(HttpHeaders.ALLOW).permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -65,4 +65,5 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(jwtService).passwordEncoder(passwordEncoder());
     }
+
 }
