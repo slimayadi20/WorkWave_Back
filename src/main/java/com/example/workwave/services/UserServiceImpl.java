@@ -157,6 +157,7 @@ public class UserServiceImpl {
     public User GetUserByUsername(String userName){
         return  userRepository.findById(userName).get();
     }
+    public List<User> GetUserByStatus(String etat){return userRepository.findByEtat(etat);}
 
 
 }

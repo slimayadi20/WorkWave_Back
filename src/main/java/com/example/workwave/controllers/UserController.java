@@ -64,6 +64,10 @@ public class UserController {
     public User getUserByUsername(@PathVariable("userName") String userName) throws Exception {
         return userService.GetUserByUsername(userName);
     }
-
+    @GetMapping(path = "/getUser")
+    public List <User> getUserByUsername() throws Exception {
+       List<User>usersactive =userService.GetUserByStatus("ACTIVE");
+        return usersactive;
+    }
 
 }

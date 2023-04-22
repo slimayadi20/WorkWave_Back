@@ -21,6 +21,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private int phoneNumber;
+    private String etat;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<holiday> holidays = new ArrayList<>();
@@ -116,4 +117,11 @@ public class User {
         this.fileName = fileName;
     }
 
+    public String getEtat() {
+        return etat;
+    }
+
+    public void setEtat(String etat) {
+        this.etat = etat;
+    }
 }
