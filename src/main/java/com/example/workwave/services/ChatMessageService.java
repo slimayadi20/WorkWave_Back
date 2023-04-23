@@ -43,6 +43,8 @@ public class ChatMessageService {
         return messages;
     }
 
+
+
     public ChatMessage findById(String id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("can't find message (" + id + ")"));

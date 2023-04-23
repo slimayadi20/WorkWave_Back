@@ -57,4 +57,10 @@ public class ChatRoomService {
 
         }
     }
+    public Optional<ChatRoom>findBySenderIdAndRecipientId(String senderId , String RecipientId){
+        return chatRoomRepository.findBySenderIdAndRecipientId(senderId,RecipientId);
+    }
+    public List<ChatRoom>findBySenderId(String senderId){
+        return chatRoomRepository.findChatRoomsBySenderId(senderId);
+    }
 }

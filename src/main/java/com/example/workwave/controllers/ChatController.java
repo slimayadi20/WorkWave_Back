@@ -106,6 +106,19 @@ public class ChatController {
         chatRoomService.deleteByChatId(chatId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/chatRooms/{senderId}/{recipientId}")
+    public ResponseEntity<?> findChatRoom ( @PathVariable String senderId,
+                                                @PathVariable String recipientId) {
+        return ResponseEntity
+                .ok(chatRoomService.findBySenderIdAndRecipientId(senderId, recipientId));
+    }
+
+    @GetMapping("/chatRooms/{senderId}")
+    public ResponseEntity<?> findChatRooms ( @PathVariable String senderId) {
+        return ResponseEntity
+                .ok(chatRoomService.findBySenderId(senderId));
+    }
 }
 //DELETE A CONVERSATION
 

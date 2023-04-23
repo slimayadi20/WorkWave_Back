@@ -1,9 +1,13 @@
 package com.example.workwave.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 @Entity
 public class ChatMessage {
@@ -17,19 +21,15 @@ public class ChatMessage {
     private String senderName;
     private String recipientName;
     private String content;
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date timestamp;
+
+    private LocalDateTime timestamp;
     @Enumerated(EnumType.STRING)
     private MessageStatus status;
 
     //constructor + getters and setters
 
 
-    public ChatMessage() {
-    }
-
-    public ChatMessage(String id, String chatId, String senderId, String recipientId, String senderName, String recipientName, String content, Date timestamp, MessageStatus status) {
+    public ChatMessage(String id, String chatId, String senderId, String recipientId, String senderName, String recipientName, String content, LocalDateTime timestamp, MessageStatus status) {
         this.id = id;
         this.chatId = chatId;
         this.senderId = senderId;
@@ -39,6 +39,9 @@ public class ChatMessage {
         this.content = content;
         this.timestamp = timestamp;
         this.status = status;
+    }
+
+    public ChatMessage() {
     }
 
     public String getId() {
@@ -97,11 +100,12 @@ public class ChatMessage {
         this.content = content;
     }
 
-    public Date getTimestamp() {
+
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 
