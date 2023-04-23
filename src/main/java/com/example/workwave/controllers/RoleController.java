@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class RoleController {
 
@@ -19,7 +21,8 @@ public class RoleController {
     public Role createNewRole(@RequestBody Role role) {
         return roleService.createNewRole(role);
     }
-
+@GetMapping({"/getallroles"})
+    public List<Role> getAllRole(){return roleService.getAllRole();}
 
 
 }

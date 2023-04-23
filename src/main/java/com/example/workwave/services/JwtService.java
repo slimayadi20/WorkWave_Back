@@ -7,6 +7,8 @@ import com.example.workwave.entities.User;
 import com.example.workwave.repositories.UserRepository;
 import com.example.workwave.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -33,14 +35,14 @@ public class JwtService implements UserDetailsService {
    private AuthenticationManager authenticationManager;
     UserServiceImpl userService ;
 
-    public JwtResponse createJwtToken(JwtRequest jwtRequest) throws Exception {
+    public ResponseEntity<?> createJwtToken(JwtRequest jwtRequest) throws Exception {
         String userName = jwtRequest.getUserName();
         Optional<User> userOptional = userRepository.findById(userName);
 
         if( userOptional.get().getToken() != null){
             // If the user already has a token, return it
             System.out.println("user not logged in");
-            return new JwtResponse(userOptional.get(), userOptional.get().getToken());
+            return ResponseEntity.status(403).body("Account not activated");
         } else {
             String userPassword = jwtRequest.getPassword();
 
@@ -52,7 +54,7 @@ public class JwtService implements UserDetailsService {
             UserDetails userDetails = loadUserByUsername(userName);
             String newGeneratedToken = jwtUtil.generateToken(userDetails);
 
-            return new JwtResponse(user, newGeneratedToken);
+            return ResponseEntity.ok(new JwtResponse(user, newGeneratedToken));
         }
     }
 
