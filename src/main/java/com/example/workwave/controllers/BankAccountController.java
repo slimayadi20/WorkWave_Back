@@ -98,4 +98,15 @@ public class BankAccountController {
         System.out.println(bankAccount.getAccountName());
         return bankAccount;
     }
+    @PostMapping("/addbalanceBankAccount/{id}/amount")
+    public BankAccount addAmountToAccount(@PathVariable long id, @RequestParam Double amount) {
+        BankAccount account = bankAccountRepository.findById(id).get();
+        if (account != null) {
+            Double currentBalance = account.getBalance();
+            Double newBalance = currentBalance + amount;
+            account.setBalance(newBalance);
+            bankAccountRepository.save(account);
+        }
+        return account;
+    }
 }

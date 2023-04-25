@@ -29,11 +29,6 @@ public class BankAccountServiceImpl {
         return "ok" ;
     }
 
-    public String deleteBankAccount(Long idBankAccount) {
-        bankAccountRepository.deleteById(idBankAccount);
-        return "BankAccount removed !! " + idBankAccount;
-    }
-
 
     //the update method
     public BankAccount updateBankAccount(BankAccount bankAccount) {
@@ -62,5 +57,6 @@ public class BankAccountServiceImpl {
             throw new EntityNotFoundException("Bank Account not found with id " + id);
         }
     }
+
 
 }
