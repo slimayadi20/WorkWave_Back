@@ -29,19 +29,19 @@ public class BankAccount  {
 
     private Boolean status;
 
-    @OneToMany(mappedBy = "bankAccount")
+    @OneToMany(mappedBy = "bankAccount", cascade = CascadeType.ALL)
     private List<Budget> budget;
     @JsonManagedReference
-    @OneToMany(mappedBy = "bankAccount")
+    @OneToMany(mappedBy = "bankAccount", cascade = CascadeType.ALL)
     private List<Invoices> invoices;
 
-    @OneToMany(mappedBy = "bankAccount")
+    @OneToMany(mappedBy = "bankAccount", cascade = CascadeType.ALL)
     private List<Payment> payments;
 
     @OneToOne(mappedBy = "bankAccount")
     private User user;
 
-    @OneToMany(mappedBy = "bankAccount")
+    @OneToMany(mappedBy = "bankAccount",cascade = CascadeType.ALL)
     private List<Transactions> transactions;
     public BankAccount() {
     }

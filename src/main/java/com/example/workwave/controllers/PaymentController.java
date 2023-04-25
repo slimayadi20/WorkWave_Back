@@ -34,31 +34,40 @@ public class PaymentController {
             return "Error: sender bank account not found.";
         }
 
-        BankAccount receiverAccount = payment.getBankAccount();
+        BankAccount receiverAccount = bankAccountRepository.findById(payment.getBankAccount().getId()).get();
         if (receiverAccount == null) {
             return "Error: receiver bank account not specified.";
         }
+        Double amountPaid = payment.getAmountPaid();
 
-        Double senderNewBalance = senderAccount.getBalance() - payment.getAmountPaid();
-        Double receiverNewBalance = receiverAccount.getBalance() + payment.getAmountPaid();
+        Transactions senderTransaction = new Transactions();
+        senderTransaction.setAmount(-amountPaid);
+        senderTransaction.setBankAccount(senderAccount);
+        senderTransaction.setDescription(payment.getDescription());
+        senderTransaction.setTransactionDate(payment.getPaymentDate());
 
+
+        Double senderNewBalance = senderAccount.getBalance() - amountPaid;
         senderAccount.setBalance(senderNewBalance);
         bankAccountRepository.save(senderAccount);
 
+
+
+        Transactions receiverTransaction = new Transactions();
+        receiverTransaction.setAmount(amountPaid);
+        receiverTransaction.setBankAccount(receiverAccount);
+        receiverTransaction.setDescription(payment.getDescription());
+        receiverTransaction.setTransactionDate(payment.getPaymentDate());
+
+
+        Double receiverNewBalance = receiverAccount.getBalance() + amountPaid;
         receiverAccount.setBalance(receiverNewBalance);
         bankAccountRepository.save(receiverAccount);
 
-        // Create a new transaction
-        Transactions transaction = new Transactions();
-        transaction.setAmount(payment.getAmountPaid());
-        transaction.setBankAccount(senderAccount);
-        transaction.setDescription(payment.getDescription());
-        transaction.setTransactionDate(payment.getPaymentDate());
 
 
-        transactionRepository.save(transaction);
-
-        // Save the payment to the database
+        transactionRepository.save(senderTransaction);
+        transactionRepository.save(receiverTransaction);
         payment.setBankAccount(senderAccount);
         paymentRepository.save(payment);
 
@@ -90,6 +99,6 @@ public class PaymentController {
         BankAccount bankAccount = bankAccountRepository.findById(idBankAccount)
                 .orElseThrow(() -> new RuntimeException("BankAccount not found"));
 
-        return paymentRepository.findByBankAccount(bankAccount);
+        return paymentRepository.findByBankAccount_Id(idBankAccount);
     }
 }

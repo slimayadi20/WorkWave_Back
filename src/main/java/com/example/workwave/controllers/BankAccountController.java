@@ -54,17 +54,6 @@ public class BankAccountController {
         BankAccount bankAccount = bankAccountRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid bank account ID: " + id));
 
-        // Check if there are any related entities with foreign key constraints
-        if (!bankAccount.getBudget().isEmpty() ||
-                !bankAccount.getInvoices().isEmpty() ||
-                !bankAccount.getPayments().isEmpty() ||
-                !bankAccount.getTransactions().isEmpty() ||
-                bankAccount.getUser() != null) {
-            // Delete related entities first
-            bankAccount.getBudget().forEach(budget -> budgetRepository.delete(budget));
-            bankAccount.getInvoices().forEach(invoice -> invoicesRepository.delete(invoice));
-            bankAccount.getPayments().forEach(payment -> paymentRepository.delete(payment));
-            bankAccount.getTransactions().forEach(transaction -> transactionRepository.delete(transaction));
             if (bankAccount.getUser() != null) {
                 // Find the user that has the bank account
                 User user = userRepository.findByBankAccount(bankAccount);
@@ -75,7 +64,7 @@ public class BankAccountController {
                 // Save the updated user entity
                 userRepository.save(user);
             }
-        }
+
 
         // Delete the bank account entity
         bankAccountRepository.delete(bankAccount);

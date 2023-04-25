@@ -59,9 +59,6 @@ public class PaymentServiceImpl {
             throw new EntityNotFoundException("Payment not found with id " + id);
         }
     }
-    public List<Payment> GetPaymentsByBankAccount(BankAccount bankAccount) {
-        return paymentRepository.findByBankAccount(bankAccount);
-    }
 
 }
 

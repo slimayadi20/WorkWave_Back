@@ -66,6 +66,9 @@ public class User {
     public void setToken(String Token) {
         this.token = Token;
     }
+    @OneToOne
+    private BankAccount bankAccount;
+
 
     public BankAccount getBankAccount() {
         return bankAccount;
