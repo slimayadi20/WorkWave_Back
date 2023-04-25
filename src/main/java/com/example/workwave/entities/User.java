@@ -29,6 +29,7 @@ public class User {
     private int phoneNumber;
     @Column(name = "token")
     private String token;
+    private boolean ban ;
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -56,7 +57,7 @@ public class User {
             joinColumns = { @JoinColumn(name = "USER_ID") },
             inverseJoinColumns = {
                     @JoinColumn(name = "ROLE_ID") })
-    private Set<Role> role;
+        private Set<Role> role;
 
 
     public String getToken() {
@@ -159,8 +160,15 @@ public class User {
         this.projet = projet;
     }
 
+    public boolean isBan() {
+        return ban;
+    }
 
-    public User( String userName, String nom, String prenom, String password, String email, String fileName, Gender gender, int phoneNumber, Set<Role> role) {
+    public void setBan(boolean ban) {
+        this.ban = ban;
+    }
+
+    public User(String userName, String nom, String prenom, String password, String email, String fileName, Gender gender, int phoneNumber, Set<Role> role) {
         this.userName = userName;
         this.nom = nom;
         this.prenom = prenom;
@@ -174,4 +182,5 @@ public class User {
         this.role = role;
         this.bankAccount = bankAccount;
     }
+
 }

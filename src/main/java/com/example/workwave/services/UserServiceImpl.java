@@ -126,8 +126,9 @@ public void initRolesAndUser(){
         return Files.readAllBytes(Paths.get(context.getRealPath("/Images/")+user.getFileName()));
     }
 
-    public User updateUser(User user,String userName) {
-        User existingUser = userRepository.findById(userName).orElse(null);
+
+    public User updateUser(User user) {
+        User existingUser = userRepository.findById(user.getUserName()).orElse(null);
         existingUser.setUserName(user.getUserName());
         existingUser.setNom(user.getNom());
         existingUser.setPrenom(user.getPrenom());
@@ -136,15 +137,45 @@ public void initRolesAndUser(){
         existingUser.setPhoneNumber(user.getPhoneNumber());
 
         return userRepository.save(existingUser);
+    }    public User updateban(User user) {
+        User existingUser = userRepository.findById(user.getUserName()).orElse(null);
+        existingUser.setBan(user.isBan());
+
+
+        return userRepository.save(existingUser);
+    }
+
+    public User updateUserimage(String user, MultipartFile file) throws JsonProcessingException {
+        User us = new ObjectMapper().readValue(user, User.class);
+        User existingUser = userRepository.findById(us.getUserName()).orElse(null);
+
+        System.out.println(us.getPassword());
+        boolean isExit = new File(context.getRealPath("/Images/")).exists();
+        if (!isExit)
+        {
+            new File (context.getRealPath("/Images/")).mkdir();
+            System.out.println("mk dir.............");
+        }
+        String filename = file.getOriginalFilename();
+        String newFileName = FilenameUtils.getBaseName(filename)+"."+ FilenameUtils.getExtension(filename);
+        File serverFile = new File (context.getRealPath("/Images/"+File.separator+newFileName));
+        try
+        {
+            System.out.println("Image");
+            FileUtils.writeByteArrayToFile(serverFile,file.getBytes());
+
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        existingUser.setFileName(newFileName);
+
+
+        return userRepository.save(existingUser);
     }
     public boolean ifEmailExist(String mail){
         return userRepository.existsByEmail(mail);
     }
-
-  /*  public User getUserByMail(String mail){
-        return userRepository.findByEmail(mail);
-    }*/
-
 
 
     public List<User> retrieveAllUsers() {

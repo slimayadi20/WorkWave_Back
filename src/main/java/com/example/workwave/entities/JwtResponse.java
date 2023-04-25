@@ -4,21 +4,9 @@ public class JwtResponse {
 
     private User user;
     private String jwtToken;
-    private String refreshToken;
 
-    public JwtResponse(User user, String jwtToken, String refreshToken) {
-        this.user = user;
-        this.jwtToken = jwtToken;
-        this.refreshToken = refreshToken;
-    }
 
-    public String getRefreshToken() {
-        return refreshToken;
-    }
 
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 
 
     public JwtResponse(String accessToken) {

@@ -6,6 +6,8 @@ import com.example.workwave.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RoleServiceImpl {
 
@@ -14,6 +16,6 @@ public class RoleServiceImpl {
     public Role createNewRole(Role role) {
         return roleRepository.save(role);
     }
-
+    public List<Role> getAllRole(){return roleRepository.findAll();}
 
 }
