@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Date;
 
 @Entity
 @Table( name = "task")
@@ -16,6 +17,18 @@ public class Task {
     private Long taskId;
 
     private String taskName;
+
+    private String description;
+
+    @Temporal(TemporalType.DATE)
+    private Date datedebut;
+
+
+    @Temporal(TemporalType.DATE)
+    private Date datefin;
+
+    private String etat;
+
 
     @ManyToMany( fetch = FetchType.LAZY)
     @JoinTable(name = "task_user",
@@ -56,14 +69,51 @@ public class Task {
         return scrumboard;
     }
 
+    public String getEtat() {
+        return etat;
+    }
+
+    public void setEtat(String etat) {
+        this.etat = etat;
+    }
+
     public void setScrumboard(ScrumBoard scrumboard) {
         this.scrumboard = scrumboard;
     }
 
-    public Task(Long taskId, String taskName, Set<User> user) {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getDatedebut() {
+        return datedebut;
+    }
+
+    public void setDatedebut(Date datedebut) {
+        this.datedebut = datedebut;
+    }
+
+    public Date getDatefin() {
+        return datefin;
+    }
+
+    public void setDatefin(Date datefin) {
+        this.datefin = datefin;
+    }
+
+    public Task(Long taskId, String taskName, String description, Date datedebut, Date datefin, String etat, Set<User> user, ScrumBoard scrumboard) {
         this.taskId = taskId;
         this.taskName = taskName;
+        this.description = description;
+        this.datedebut = datedebut;
+        this.datefin = datefin;
+        this.etat = etat;
         this.user = user;
+        this.scrumboard = scrumboard;
     }
 
     public Task() {

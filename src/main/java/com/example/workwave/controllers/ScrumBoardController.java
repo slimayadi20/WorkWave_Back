@@ -44,4 +44,8 @@ public class ScrumBoardController {
     public ScrumBoard getScrumBoardById(@PathVariable Long id) {
         return scrumBoardService.getScrumBoardById(id);
     }
+    @GetMapping("/ScrumBoardbyproject/{id}")
+    public ScrumBoard getScrumBoardByprojectId(@PathVariable Long id) {
+        return scrumBoardService.getScrumBoardByProjectId(id);
+    }
 }

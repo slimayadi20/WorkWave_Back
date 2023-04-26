@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -54,7 +55,15 @@ public class UserController {
     public String registerNewUser(@RequestParam("user") String user, @RequestParam("file") MultipartFile file) throws JsonProcessingException {
         return userService.registerNewUser(user, file);
     }
-
+    @GetMapping("/usernames")
+    public List<String> getAllUsernames() {
+        List<User> users = userRepository.findAll();
+        List<String> usernames = new ArrayList<>();
+        for (User user : users) {
+            usernames.add(user.getUserName());
+        }
+        return usernames;
+    }
     @PutMapping("/updateUser/{userName}")
     public User updateUser(@RequestBody User user, @PathVariable("userName") String userName) {
         return userService.updateUser(user, userName);

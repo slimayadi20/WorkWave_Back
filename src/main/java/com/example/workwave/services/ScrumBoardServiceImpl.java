@@ -2,6 +2,7 @@ package com.example.workwave.services;
 
 import com.example.workwave.entities.Project;
 import com.example.workwave.entities.ScrumBoard;
+import com.example.workwave.repositories.ProjectRepository;
 import com.example.workwave.repositories.ScrumBoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,14 +16,16 @@ public class ScrumBoardServiceImpl {
 
     @Autowired
     ScrumBoardRepository scrumBoardRepository;
+    @Autowired
+    ProjectRepository projectRepository;
 
     public List<ScrumBoard> GetAllScrumBoard() {
         return scrumBoardRepository.findAll();
     }
 
-    public String addScrumBoard(ScrumBoard sb)  {
+    public String addScrumBoard(ScrumBoard sb) {
         scrumBoardRepository.save(sb);
-        return "ok" ;
+        return "ok";
     }
 
 
@@ -44,5 +47,11 @@ public class ScrumBoardServiceImpl {
         } else {
             throw new EntityNotFoundException("ScrumBoard not found with id " + id);
         }
+    }
+
+    public ScrumBoard getScrumBoardByProjectId(Long id) {
+        Project projet = projectRepository.findById(id).get();
+        ScrumBoard optionalScrumBoard = scrumBoardRepository.findByProject(projet);
+        return optionalScrumBoard;
     }
 }
