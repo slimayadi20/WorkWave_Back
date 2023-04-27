@@ -1,11 +1,7 @@
 package com.example.workwave.controllers;
 
-import com.example.workwave.entities.BankAccount;
+import com.example.workwave.entities.*;
 
-import com.example.workwave.entities.Budget;
-import com.example.workwave.entities.User;
-
-import com.example.workwave.entities.holiday;
 import com.example.workwave.repositories.*;
 import com.example.workwave.services.BankAccountServiceImpl;
 import com.example.workwave.services.ProjectServiceImpl;
@@ -13,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -45,8 +42,8 @@ public class BankAccountController {
             user.setBankAccount(bankAccount);
             userRepository.save(user);
         }
-        return bankAccountService.addBankAccount(bankAccount);
-
+         bankAccountService.addBankAccount(bankAccount);
+     return "Account Added";
     }
 
     @DeleteMapping("/deleteBankAccount/{id}")
@@ -105,6 +102,13 @@ public class BankAccountController {
             Double currentBalance = account.getBalance();
             Double newBalance = currentBalance + amount;
             account.setBalance(newBalance);
+            Transactions receiverTransaction = new Transactions();
+            receiverTransaction.setAmount(amount);
+            receiverTransaction.setBankAccount(account);
+            receiverTransaction.setDescription("Adding to Balance");
+            receiverTransaction.setTransactionDate(LocalDate.now());
+            transactionRepository.save(receiverTransaction);
+
             bankAccountRepository.save(account);
         }
         return account;

@@ -1,15 +1,12 @@
 package com.example.workwave.entities;
 
 import com.fasterxml.jackson.annotation.*;
-import com.example.workwave.entities.Budget;
+
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
+
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Entity
 @Table( name = "Payment")
@@ -21,7 +18,7 @@ public class Payment {
 
     private String paymentNumber;
 
-    private Date paymentDate;
+    private LocalDate paymentDate;
 
     private Double amountPaid;
 
@@ -56,11 +53,11 @@ public class Payment {
         this.paymentNumber = paymentNumber;
     }
 
-    public Date getPaymentDate() {
+    public LocalDate getPaymentDate() {
         return paymentDate;
     }
 
-    public void setPaymentDate(Date paymentDate) {
+    public void setPaymentDate(LocalDate paymentDate) {
         this.paymentDate = paymentDate;
     }
 
@@ -112,7 +109,7 @@ public class Payment {
         this.bankAccount = bankAccount;
     }
 
-    public Payment(Long id, String paymentNumber, Date paymentDate, Double amountPaid, String description, String status, String createdBy, LocalDateTime createdAt, BankAccount bankAccount) {
+    public Payment(Long id, String paymentNumber, LocalDate paymentDate, Double amountPaid, String description, String status, String createdBy, LocalDateTime createdAt, BankAccount bankAccount) {
         this.id = id;
         this.paymentNumber = paymentNumber;
         this.paymentDate = paymentDate;

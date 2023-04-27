@@ -1,12 +1,11 @@
 package com.example.workwave.entities;
 
 import com.fasterxml.jackson.annotation.*;
-import com.example.workwave.entities.Budget;
+
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
+
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Entity
 @Table( name = "Transactions")
@@ -17,7 +16,7 @@ public class Transactions {
 
     private Double amount;
 
-    private Date transactionDate;
+    private LocalDate transactionDate;
 
     private String description;
 
@@ -44,11 +43,11 @@ public class Transactions {
         this.amount = amount;
     }
 
-    public Date getTransactionDate() {
+    public LocalDate getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(Date transactionDate) {
+    public void setTransactionDate(LocalDate transactionDate) {
         this.transactionDate = transactionDate;
     }
 
@@ -68,7 +67,7 @@ public class Transactions {
         this.bankAccount = bankAccount;
     }
 
-    public Transactions(Long id, Double amount, Date transactionDate, String description, BankAccount bankAccount) {
+    public Transactions(Long id, Double amount, LocalDate transactionDate, String description, BankAccount bankAccount) {
         this.id = id;
         this.amount = amount;
         this.transactionDate = transactionDate;
