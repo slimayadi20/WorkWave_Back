@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 public interface BankAccountRepository extends JpaRepository<BankAccount,Long> {
     BankAccount findByUserUserName(String user);
-
+    List<BankAccount> findByStatusIsTrue();
 }

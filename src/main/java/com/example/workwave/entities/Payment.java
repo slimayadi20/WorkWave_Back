@@ -24,7 +24,8 @@ public class Payment {
 
     private String description;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
 
     private String createdBy;
 
@@ -77,13 +78,6 @@ public class Payment {
         this.description = description;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     public String getCreatedBy() {
         return createdBy;
@@ -109,16 +103,12 @@ public class Payment {
         this.bankAccount = bankAccount;
     }
 
-    public Payment(Long id, String paymentNumber, LocalDate paymentDate, Double amountPaid, String description, String status, String createdBy, LocalDateTime createdAt, BankAccount bankAccount) {
-        this.id = id;
-        this.paymentNumber = paymentNumber;
-        this.paymentDate = paymentDate;
-        this.amountPaid = amountPaid;
-        this.description = description;
-        this.status = status;
-        this.createdBy = createdBy;
-        this.createdAt = createdAt;
-        this.bankAccount = bankAccount;
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
     @Override
@@ -129,7 +119,7 @@ public class Payment {
                 ", paymentDate=" + paymentDate +
                 ", amountPaid=" + amountPaid +
                 ", description='" + description + '\'' +
-                ", status='" + status + '\'' +
+                ", paymentStatus=" + paymentStatus +
                 ", createdBy='" + createdBy + '\'' +
                 ", createdAt=" + createdAt +
                 ", bankAccount=" + bankAccount +

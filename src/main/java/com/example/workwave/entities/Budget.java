@@ -28,6 +28,8 @@ public class Budget {
 
     private String notes;
 
+    @Enumerated(EnumType.STRING)
+    private StatusBudget statusBudget;
     @ManyToOne
     private BankAccount bankAccount;
 
@@ -37,15 +39,12 @@ public class Budget {
     public Budget() {
     }
 
-    public Budget(Long id, String name, Double amount, Date startDate, Date endDate, String notes, BankAccount bankAccount, Project project) {
-        this.id = id;
-        this.name = name;
-        this.amount = amount;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.notes = notes;
-        this.bankAccount = bankAccount;
-        this.project = project;
+    public StatusBudget getStatusBudget() {
+        return statusBudget;
+    }
+
+    public void setStatusBudget(StatusBudget statusBudget) {
+        this.statusBudget = statusBudget;
     }
 
     public Long getId() {

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import net.bytebuddy.implementation.bytecode.constant.DefaultValue;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -27,6 +28,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private int phoneNumber;
+
+    private int salary;
     @Column(name = "token")
     private String token;
     private boolean ban ;
@@ -43,6 +46,13 @@ public class User {
 
     }
 
+    public int getSalary(){
+        return salary;
+    }
+
+    public void setSalary(int salary) {
+        this.salary = salary;
+    }
 
     public List<holiday> getHolidays() {
         return holidays;

@@ -1,15 +1,15 @@
 package com.example.workwave.services;
 
-import com.example.workwave.entities.BankAccount;
-import com.example.workwave.entities.Budget;
-import com.example.workwave.entities.Payment;
-import com.example.workwave.entities.Project;
+import com.example.workwave.entities.*;
 import com.example.workwave.repositories.BudgetRepository;
+import com.example.workwave.repositories.ProjectRepository;
+import com.example.workwave.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.ServletContext;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -19,6 +19,78 @@ public class BudgetServiceImpl {
 
     @Autowired
     ServletContext context;
+
+    @Autowired
+    ProjectRepository projectRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    public Budget requestBudget(Long pID,Double Amount ) {
+        Project project = projectRepository.findById(pID)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
+        Budget budget = new Budget();
+        budget.setName(project.getProject_name() + " Budget");
+        budget.setAmount(Amount);
+        budget.setStartDate(new Date());
+        budget.setEndDate(project.getDateExpiration());
+        budget.setNotes(project.getDescription());
+        budget.setStatusBudget(StatusBudget.InProgress);
+        budget.setProject(project);
+        project.setBudget(budget);
+        budgetRepository.save(budget);
+
+
+        return budget;
+    }
+
+    public Budget approveBudget(Long budgetId, String username) {
+        User user = userRepository.findById(username).get();
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        boolean isFinancialManager;
+        for (Role role : user.getRole()) {
+            if (role.getRoleName().equals("FINANCIAL_MANAGER")) {
+                isFinancialManager = true;
+                break;
+            }
+        }
+
+        Budget budget = budgetRepository.findById(budgetId).orElse(null);
+        if (budget == null) {
+            throw new RuntimeException("Budget not found");
+        }
+
+        budget.setStatusBudget(StatusBudget.Approved);
+        budgetRepository.save(budget);
+
+        return budget;
+    }
+
+    public Budget declineBudget(Long budgetId, String username) {
+        User user = userRepository.findById(username).get();
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        boolean isFinancialManager;
+        for (Role role : user.getRole()) {
+            if (role.getRoleName().equals("FINANCIAL_MANAGER")) {
+                isFinancialManager = true;
+                break;
+            }
+        }
+
+        Budget budget = budgetRepository.findById(budgetId).orElse(null);
+        if (budget == null) {
+            throw new RuntimeException("Budget not found");
+        }
+
+        budget.setStatusBudget(StatusBudget.Declined);
+        budgetRepository.save(budget);
+
+        return budget;
+    }
 
     public List<Budget> GetAllBudgets() {
         return budgetRepository.findAll();

@@ -8,6 +8,7 @@ import com.example.workwave.services.BudgetServiceImpl;
 import com.example.workwave.services.PaymentServiceImpl;
 import com.example.workwave.services.ProjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,7 +23,10 @@ public class PaymentController {
     @Autowired
     BankAccountRepository bankAccountRepository;
     @Autowired
+    UserRepository userRepository;
+    @Autowired
     PaymentServiceImpl paymentService;
+
     @Autowired
     TransactionRepository transactionRepository;
 
@@ -100,5 +104,25 @@ public class PaymentController {
                 .orElseThrow(() -> new RuntimeException("BankAccount not found"));
 
         return paymentRepository.findByBankAccount_Id(idBankAccount);
+    }
+    @PostMapping("/Paysalary")
+    public ResponseEntity<String> paySalary(
+            @RequestParam("userId") String userId,
+            @RequestParam("senderBankAccountId") Long senderBankAccountId,
+            @RequestParam("receiverBankAccountId") Long receiverBankAccountId
+    ) {
+        // Retrieve the user by ID
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
+
+        // Make the payment
+        try {
+            paymentService.paySalary(user, senderBankAccountId, receiverBankAccountId);
+            return ResponseEntity.ok("Payment successful");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

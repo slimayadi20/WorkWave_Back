@@ -1,8 +1,6 @@
 package com.example.workwave.controllers;
 
-import com.example.workwave.entities.Role;
-import com.example.workwave.entities.User;
-import com.example.workwave.entities.otp;
+import com.example.workwave.entities.*;
 import com.example.workwave.repositories.OtpRepository;
 import com.example.workwave.repositories.RoleRepository;
 import com.example.workwave.repositories.UserRepository;
@@ -19,11 +17,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -46,11 +46,11 @@ public class UserController {
     private OtpRepository otpRepository;
     @Autowired
     private JavaMailSender mailSender;
-//   @PostConstruct //lors de l'execution
-//   public void initRoleAndUser() {
-//       userService.initRolesAndUser();
-//   }
-
+ // @PostConstruct //lors de l'execution
+ // public void initRoleAndUser() {
+ //      userService.initRolesAndUser();
+ // }
+//
 
     @GetMapping(path = "/ImgUsers/{userName}")
     public byte[] getPhoto(@PathVariable("userName") String userName) throws Exception {
@@ -303,6 +303,22 @@ public class UserController {
             return ResponseEntity.ok().body(response);
         }
     }
+    @GetMapping("/UserByBankAccount/{id}")
+    public User getUsersBy(@PathVariable Long id) {
+        return userRepository.findByBankAccount_Id(id);
+    }
 
+
+    @GetMapping("/unpaid")
+    public List<User> getUnpaidUsers() {
+        LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+        System.out.println(thirtyDaysAgo);
+        return userRepository.findUsersWithNoPaymentsInLast30Days(thirtyDaysAgo);
+    }
+    @PutMapping("/{userName}/salary")
+    public ResponseEntity<?> setSalary(@PathVariable String userName, @RequestParam int salary) {
+        userService.setSalary(userName, salary);
+        return ResponseEntity.ok().build();
+    }
 
 }

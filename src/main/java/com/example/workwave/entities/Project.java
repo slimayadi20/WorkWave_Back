@@ -127,12 +127,4 @@ public class Project {
     public Project() {
     }
 
-    public Project(Long id, String project_name, String description,  Date dateEmission, Date dateExpiration, String etat) {
-        this.id = id;
-        this.project_name = project_name;
-        this.description = description;
-        this.dateEmission = dateEmission;
-        this.dateExpiration = dateExpiration;
-        this.etat = etat;
-    }
 }

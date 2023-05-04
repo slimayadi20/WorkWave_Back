@@ -10,6 +10,7 @@ import com.example.workwave.services.BankAccountServiceImpl;
 import com.example.workwave.services.BudgetServiceImpl;
 import com.example.workwave.services.ProjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -73,6 +74,23 @@ public class BudgetController {
             throw new RuntimeException("Budget not found for Project");
         }
         return budget;
+    }
+    @PostMapping("/requestBudget")
+    public ResponseEntity<Budget> requestBudget(@RequestBody Long ProjectID, @RequestParam Double Amount) {
+        Budget requestedBudget = budgetService.requestBudget(ProjectID, Amount);
+        return ResponseEntity.ok(requestedBudget);
+    }
+
+    @PostMapping("/approveBudget/{budgetId}")
+    public ResponseEntity<Budget> approveBudget(@PathVariable Long budgetId, @RequestParam String username) {
+        Budget approvedBudget = budgetService.approveBudget(budgetId, username);
+        return ResponseEntity.ok(approvedBudget);
+    }
+
+    @PostMapping("/declineBudget/{budgetId}")
+    public ResponseEntity<Budget> declineBudget(@PathVariable Long budgetId, @RequestParam String username) {
+        Budget declinedBudget = budgetService.declineBudget(budgetId, username);
+        return ResponseEntity.ok(declinedBudget);
     }
 }
 

@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 public interface InvoicesRepository extends JpaRepository<Invoices,Long> {
+    public List<Invoices> getInvoicesByBankAccount(BankAccount bankAccount);
 }
