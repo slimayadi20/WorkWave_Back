@@ -320,5 +320,10 @@ public class UserController {
         userService.setSalary(userName, salary);
         return ResponseEntity.ok().build();
     }
+    @GetMapping("/usersPaid")
+    public List<User> getUsersWithPaymentsForBankAccount(@RequestParam Long bankAccountId) {
+        LocalDate date = LocalDate.now().minusDays(29);
+        return userRepository.findUsersWithPaymentsInLast29DaysForBankAccount(date, bankAccountId);
+    }
 
 }

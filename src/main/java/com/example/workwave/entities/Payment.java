@@ -31,11 +31,20 @@ public class Payment {
 
     private LocalDateTime createdAt;
 
+    private Long senderBankAccountId;
     @ManyToOne
     private BankAccount bankAccount;
 
     public Payment() {
 
+    }
+
+    public Long getSenderBankAccountId() {
+        return senderBankAccountId;
+    }
+
+    public void setSenderBankAccountId(Long senderBankAccountId) {
+        this.senderBankAccountId = senderBankAccountId;
     }
 
     public Long getId() {

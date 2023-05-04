@@ -66,31 +66,37 @@ public class PaymentServiceImpl {
             throw new EntityNotFoundException("Payment not found with id " + id);
         }
     }
-    @Scheduled(cron = "0 0 0 1 * ?")
-    public void autoPay() {
-
-        List<BankAccount> bankAccounts = bankAccountRepository.findByStatusIsTrue();
-
-        for (BankAccount bankAccount : bankAccounts) {
-            User user = userRepository.findByBankAccount(bankAccount);
-            Payment payment = new Payment();
-            payment.setPaymentNumber("AutoPay-" + LocalDate.now().toString());
-            payment.setPaymentDate(LocalDate.now());
-            payment.setAmountPaid((double) user.getSalary());
-            payment.setDescription("AutoPay Salary");
-            payment.setPaymentStatus(PaymentStatus.PAID);
-            payment.setCreatedBy("System");
-            payment.setCreatedAt(LocalDateTime.now());
-            payment.setBankAccount(bankAccount);
-            paymentRepository.save(payment);
-
-            Double newBalance = bankAccount.getBalance() + payment.getAmountPaid();
-            bankAccount.setBalance(newBalance);
-            bankAccountRepository.save(bankAccount);
-
-        }
-    }
-    public void paySalary(User user, Long senderBankAccountId, Long receiverBankAccountId) {
+  //  @Scheduled(cron = "0 0 0 1 * ?")
+  //  public void autoPay(User user,Long senderBankAccountId, Long receiverBankAccountId) {
+  //      BankAccount senderBankAccount = bankAccountRepository.findById(senderBankAccountId).orElse(null);
+  //      BankAccount receiverBankAccount = bankAccountRepository.findById(receiverBankAccountId).orElse(null);
+//
+  //      Payment payment = new Payment();
+  //          payment.setPaymentNumber("AutoPay-" + LocalDate.now().toString());
+  //          payment.setPaymentDate(LocalDate.now());
+  //          payment.setAmountPaid((double) user.getSalary());
+  //          payment.setDescription("AutoPay Salary");
+  //          payment.setPaymentStatus(PaymentStatus.PAID);
+  //          payment.setCreatedBy("System");
+  //          payment.setCreatedAt(LocalDateTime.now());
+  //          payment.setBankAccount(receiverBankAccount);
+  //          payment.setSenderBankAccountId(senderBankAccountId);
+  //          paymentRepository.save(payment);
+  //      Double salary = Double.valueOf(user.getSalary());
+  //      if (senderBankAccount.getBalance() < salary) {
+  //          throw new RuntimeException("Insufficient funds");
+  //      }
+  //      Double senderNewBalance = senderBankAccount.getBalance() - salary;
+  //      Double receiverNewBalance = receiverBankAccount.getBalance() + salary;
+//
+  //      senderBankAccount.setBalance(senderNewBalance);
+  //      receiverBankAccount.setBalance(receiverNewBalance);
+  //      bankAccountRepository.save(senderBankAccount);
+  //      bankAccountRepository.save(receiverBankAccount);
+//
+//
+  //  }
+    public String paySalary(User user, Long senderBankAccountId, Long receiverBankAccountId) {
         BankAccount senderBankAccount = bankAccountRepository.findById(senderBankAccountId).orElse(null);
         BankAccount receiverBankAccount = bankAccountRepository.findById(receiverBankAccountId).orElse(null);
 
@@ -107,24 +113,26 @@ public class PaymentServiceImpl {
         payment.setPaymentNumber("Salary-" + LocalDate.now().toString());
         payment.setPaymentDate(LocalDate.now());
         payment.setAmountPaid(salary);
-        payment.setDescription("Salary payment");
+        payment.setDescription("Salary Payment");
         payment.setPaymentStatus(PaymentStatus.PAID);
         payment.setCreatedBy("System");
         payment.setCreatedAt(LocalDateTime.now());
         payment.setBankAccount(receiverBankAccount);
+        payment.setSenderBankAccountId(senderBankAccountId);
         paymentRepository.save(payment);
 
         Transactions transaction = new Transactions();
-        transaction.setAmount(salary);
+        transaction.setAmount(-salary);
         transaction.setTransactionDate(LocalDate.now());
-        transaction.setDescription("Salary payment");
+        transaction.setDescription("Salary Payment");
         transaction.setBankAccount(senderBankAccount);
         transactionRepository.save(transaction);
+
         Transactions transactionR = new Transactions();
-        transaction.setAmount(salary);
-        transaction.setTransactionDate(LocalDate.now());
-        transaction.setDescription("Salary payment For Employee");
-        transaction.setBankAccount(senderBankAccount);
+        transactionR.setAmount(salary);
+        transactionR.setTransactionDate(LocalDate.now());
+        transactionR.setDescription("Salary payment For You");
+        transactionR.setBankAccount(receiverBankAccount);
         transactionRepository.save(transactionR);
 
         Double senderNewBalance = senderBankAccount.getBalance() - salary;
@@ -135,6 +143,8 @@ public class PaymentServiceImpl {
 
         bankAccountRepository.save(senderBankAccount);
         bankAccountRepository.save(receiverBankAccount);
+        return "Payment Successful";
     }
+
 }
 

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -30,53 +31,53 @@ public class PaymentController {
     @Autowired
     TransactionRepository transactionRepository;
 
-    @PostMapping("/addPayment")
-    public String addPayment(@RequestParam Long senderAccountId, @RequestBody Payment payment) {
-        // Get the sender bank account from the database
-        BankAccount senderAccount = bankAccountRepository.findById(senderAccountId).orElse(null);
-        if (senderAccount == null) {
-            return "Error: sender bank account not found.";
-        }
+  //@PostMapping("/addPayment")
+  //public String addPayment(@RequestParam Long senderAccountId, @RequestBody Payment payment) {
+  //    // Get the sender bank account from the database
+  //    BankAccount senderAccount = bankAccountRepository.findById(senderAccountId).orElse(null);
+  //    if (senderAccount == null) {
+  //        return "Error: sender bank account not found.";
+  //    }
 
-        BankAccount receiverAccount = bankAccountRepository.findById(payment.getBankAccount().getId()).get();
-        if (receiverAccount == null) {
-            return "Error: receiver bank account not specified.";
-        }
-        Double amountPaid = payment.getAmountPaid();
+  //    BankAccount receiverAccount = bankAccountRepository.findById(payment.getBankAccount().getId()).get();
+  //    if (receiverAccount == null) {
+  //        return "Error: receiver bank account not specified.";
+  //    }
+  //    Double amountPaid = payment.getAmountPaid();
 
-        Transactions senderTransaction = new Transactions();
-        senderTransaction.setAmount(-amountPaid);
-        senderTransaction.setBankAccount(senderAccount);
-        senderTransaction.setDescription(payment.getDescription());
-        senderTransaction.setTransactionDate(payment.getPaymentDate());
-
-
-        Double senderNewBalance = senderAccount.getBalance() - amountPaid;
-        senderAccount.setBalance(senderNewBalance);
-        bankAccountRepository.save(senderAccount);
+  //    Transactions senderTransaction = new Transactions();
+  //    senderTransaction.setAmount(-amountPaid);
+  //    senderTransaction.setBankAccount(senderAccount);
+  //    senderTransaction.setDescription(payment.getDescription());
+  //    senderTransaction.setTransactionDate(payment.getPaymentDate());
 
 
-
-        Transactions receiverTransaction = new Transactions();
-        receiverTransaction.setAmount(amountPaid);
-        receiverTransaction.setBankAccount(receiverAccount);
-        receiverTransaction.setDescription(payment.getDescription());
-        receiverTransaction.setTransactionDate(payment.getPaymentDate());
-
-
-        Double receiverNewBalance = receiverAccount.getBalance() + amountPaid;
-        receiverAccount.setBalance(receiverNewBalance);
-        bankAccountRepository.save(receiverAccount);
+  //    Double senderNewBalance = senderAccount.getBalance() - amountPaid;
+  //    senderAccount.setBalance(senderNewBalance);
+  //    bankAccountRepository.save(senderAccount);
 
 
 
-        transactionRepository.save(senderTransaction);
-        transactionRepository.save(receiverTransaction);
-        payment.setBankAccount(senderAccount);
-        paymentRepository.save(payment);
+  //    Transactions receiverTransaction = new Transactions();
+  //    receiverTransaction.setAmount(amountPaid);
+  //    receiverTransaction.setBankAccount(receiverAccount);
+  //    receiverTransaction.setDescription(payment.getDescription());
+  //    receiverTransaction.setTransactionDate(payment.getPaymentDate());
 
-        return "Payment added successfully.";
-    }
+
+  //    Double receiverNewBalance = receiverAccount.getBalance() + amountPaid;
+  //    receiverAccount.setBalance(receiverNewBalance);
+  //    bankAccountRepository.save(receiverAccount);
+
+
+
+  //    transactionRepository.save(senderTransaction);
+  //    transactionRepository.save(receiverTransaction);
+  //    payment.setBankAccount(senderAccount);
+  //    paymentRepository.save(payment);
+
+  //    return "Payment added successfully.";
+  //}
     @DeleteMapping("/deletePayment/{id}")
     public String deletePayment(@PathVariable long id) {
         return paymentService.deletePayment(id);
@@ -117,7 +118,6 @@ public class PaymentController {
             return ResponseEntity.badRequest().body("User not found");
         }
 
-        // Make the payment
         try {
             paymentService.paySalary(user, senderBankAccountId, receiverBankAccountId);
             return ResponseEntity.ok("Payment successful");
@@ -125,4 +125,5 @@ public class PaymentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 }
