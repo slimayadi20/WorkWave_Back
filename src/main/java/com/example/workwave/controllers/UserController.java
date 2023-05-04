@@ -324,6 +324,10 @@ public class UserController {
     public List<User> getUsersWithPaymentsForBankAccount(@RequestParam Long bankAccountId) {
         LocalDate date = LocalDate.now().minusDays(29);
         return userRepository.findUsersWithPaymentsInLast29DaysForBankAccount(date, bankAccountId);
+    @GetMapping(path = "/getUser")
+    public List <User> getUserByUsername() throws Exception {
+       List<User>usersactive =userService.GetUserByStatus("ACTIVE");
+        return usersactive;
     }
 
 }

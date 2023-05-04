@@ -201,6 +201,7 @@ public class UserServiceImpl {
             throw new UsernameNotFoundException("Could not find any User with the token");
         }
     }
+    public List<User> GetUserByStatus(String etat){return userRepository.findByEtat(etat);}
 
 
 

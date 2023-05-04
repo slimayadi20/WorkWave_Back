@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.List;
+
 public interface UserRepository extends JpaRepository<User,String> {
     public User findByBankAccount_Id(Long ID);
 
@@ -42,4 +44,5 @@ public interface UserRepository extends JpaRepository<User,String> {
             "WHERE p.paymentDate >= :date " +
             "AND p.senderBankAccountId = :bankAccountId")
     List<User> findUsersWithPaymentsInLast29DaysForBankAccount(LocalDate date, Long bankAccountId);
+    public List<User> findByEtat (String etat);
 }

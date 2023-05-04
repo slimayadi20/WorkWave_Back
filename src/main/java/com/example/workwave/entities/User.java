@@ -35,6 +35,7 @@ public class User {
     private boolean ban ;
 
 
+    private String etat;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<holiday> holidays = new ArrayList<>();
@@ -193,4 +194,11 @@ public class User {
         this.bankAccount = bankAccount;
     }
 
+    public String getEtat() {
+        return etat;
+    }
+
+    public void setEtat(String etat) {
+        this.etat = etat;
+    }
 }
