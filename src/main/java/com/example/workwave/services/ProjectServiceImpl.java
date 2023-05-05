@@ -18,7 +18,7 @@ import java.util.Optional;
 public class ProjectServiceImpl {
     @Autowired
     ProjectRepository projectRepository;
-    @Autowired
+        @Autowired
     ScrumBoardRepository scrumrepository;
 
     @Autowired
@@ -38,6 +38,8 @@ public class ProjectServiceImpl {
     }
 
     public String deleteProject(Long idProject) {
+        Project p = projectRepository.findById(idProject).get();
+       scrumrepository.delete( scrumrepository.findByProject(p) );
         projectRepository.deleteById(idProject);
         return "project removed !! " + idProject;
     }
