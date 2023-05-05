@@ -47,9 +47,11 @@ public class TaskController {
         return taskService.getTaskById(id);
     }
 
-    @PostMapping("/changeetat/{id}")
-    public Task changeTaskStatus(@PathVariable long id, @RequestParam String etat) {
+    @PostMapping("/changeetat/{id}/{etat}")
+    public Task changeTaskStatus(@PathVariable long id, @PathVariable String etat) {
         Task task = taskRepository.findById(id).get();
+        System.out.println("task*********************************************");
+        System.out.println(task);
         task.setEtat(etat);
         taskRepository.save(task);
 
