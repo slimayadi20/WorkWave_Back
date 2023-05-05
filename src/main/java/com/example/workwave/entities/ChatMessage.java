@@ -23,8 +23,11 @@ public class ChatMessage {
     private String content;
 
     private LocalDateTime timestamp;
+
     @Enumerated(EnumType.STRING)
     private MessageStatus status;
+
+    private boolean video;
 
     //constructor + getters and setters
 
@@ -39,6 +42,18 @@ public class ChatMessage {
         this.content = content;
         this.timestamp = timestamp;
         this.status = status;
+    }
+    public ChatMessage(String id, String chatId, String senderId, String recipientId, String senderName, String recipientName, String content, LocalDateTime timestamp, MessageStatus status,boolean video) {
+        this.id = id;
+        this.chatId = chatId;
+        this.senderId = senderId;
+        this.recipientId = recipientId;
+        this.senderName = senderName;
+        this.recipientName = recipientName;
+        this.content = content;
+        this.timestamp = timestamp;
+        this.status = status;
+        this.video= video;
     }
 
     public ChatMessage() {
@@ -130,5 +145,13 @@ public class ChatMessage {
                 ", timestamp=" + timestamp +
                 ", status=" + status +
                 '}';
+    }
+
+    public boolean isVideo() {
+        return video;
+    }
+
+    public void setVideo(boolean video) {
+        this.video = video;
     }
 }

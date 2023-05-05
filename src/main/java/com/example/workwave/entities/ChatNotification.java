@@ -4,6 +4,7 @@ public class ChatNotification {
     private String id;
     private String senderId;
     private String senderName;
+    private boolean video;
 
     //constructors + getters and setters
 
@@ -15,6 +16,12 @@ public class ChatNotification {
         this.id = id;
         this.senderId = senderId;
         this.senderName = senderName;
+    }
+    public ChatNotification(String id, String senderId, String senderName,boolean video) {
+        this.id = id;
+        this.senderId = senderId;
+        this.senderName = senderName;
+        this.video=video;
     }
 
     public String getId() {
@@ -39,6 +46,14 @@ public class ChatNotification {
 
     public void setSenderName(String senderName) {
         this.senderName = senderName;
+    }
+
+    public boolean isVideo() {
+        return video;
+    }
+
+    public void setVideo(boolean video) {
+        this.video = video;
     }
 
     @Override

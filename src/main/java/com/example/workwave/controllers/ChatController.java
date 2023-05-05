@@ -1,4 +1,5 @@
 package com.example.workwave.controllers;
+
 import com.example.workwave.entities.ChatMessage;
 import com.example.workwave.entities.ChatNotification;
 import com.example.workwave.services.ChatMessageService;
@@ -18,9 +19,12 @@ import java.util.Optional;
 @Controller
 public class ChatController {
 
-    @Autowired private SimpMessagingTemplate messagingTemplate;
-    @Autowired private ChatMessageService chatMessageService;
-    @Autowired private ChatRoomService chatRoomService;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private ChatMessageService chatMessageService;
+    @Autowired
+    private ChatRoomService chatRoomService;
 
 
     //{
@@ -43,11 +47,12 @@ public class ChatController {
 
         ChatMessage saved = chatMessageService.save(chatMessage);
         messagingTemplate.convertAndSendToUser(
-                chatMessage.getRecipientId(),"/queue/messages",
+                chatMessage.getRecipientId(), "/queue/messages",
                 new ChatNotification(
                         saved.getId(),
                         saved.getSenderId(),
-                        saved.getSenderName()));
+                        saved.getSenderName(),
+                        saved.isVideo()));
     }
 
     @GetMapping("/messages/{senderId}/{recipientId}/count")
@@ -60,14 +65,14 @@ public class ChatController {
     }
 
     @GetMapping("/messages/{senderId}/{recipientId}")
-    public ResponseEntity<?> findChatMessages ( @PathVariable String senderId,
-                                                @PathVariable String recipientId) {
+    public ResponseEntity<?> findChatMessages(@PathVariable String senderId,
+                                              @PathVariable String recipientId) {
         return ResponseEntity
                 .ok(chatMessageService.findChatMessages(senderId, recipientId));
     }
 
     @GetMapping("/messages/{id}")
-    public ResponseEntity<?> findMessage ( @PathVariable String id) {
+    public ResponseEntity<?> findMessage(@PathVariable String id) {
         return ResponseEntity
                 .ok(chatMessageService.findById(id));
     }
@@ -86,8 +91,9 @@ public class ChatController {
         chatMessageService.save(chatMessage);
         return ResponseEntity.ok(chatMessage);
     }
+
     @PostMapping("/chat/add")
-    public ResponseEntity<?> addMessage( @RequestBody ChatMessage requestBody) {
+    public ResponseEntity<?> addMessage(@RequestBody ChatMessage requestBody) {
         Optional<String> chatId = chatRoomService
                 .getChatId(requestBody.getSenderId(), requestBody.getRecipientId(), true);
         requestBody.setChatId(chatId.get());
@@ -95,11 +101,13 @@ public class ChatController {
 
         return ResponseEntity.ok(requestBody);
     }
+
     @DeleteMapping("/chatRoom/{id}")
     public ResponseEntity<?> deleteChatRoom(@PathVariable String id) {
         chatRoomService.deleteById(id);
         return ResponseEntity.ok().build();
     }
+
     @DeleteMapping("/chatRoomD/{chatId}")
 
     public ResponseEntity<?> deleteChatRoomsChatId(@PathVariable String chatId) {
@@ -108,14 +116,14 @@ public class ChatController {
     }
 
     @GetMapping("/chatRooms/{senderId}/{recipientId}")
-    public ResponseEntity<?> findChatRoom ( @PathVariable String senderId,
-                                                @PathVariable String recipientId) {
+    public ResponseEntity<?> findChatRoom(@PathVariable String senderId,
+                                          @PathVariable String recipientId) {
         return ResponseEntity
                 .ok(chatRoomService.findBySenderIdAndRecipientId(senderId, recipientId));
     }
 
     @GetMapping("/chatRooms/{senderId}")
-    public ResponseEntity<?> findChatRooms ( @PathVariable String senderId) {
+    public ResponseEntity<?> findChatRooms(@PathVariable String senderId) {
         return ResponseEntity
                 .ok(chatRoomService.findBySenderId(senderId));
     }
