@@ -44,10 +44,15 @@ public class RoleController {
     public ResponseEntity<?> createUsersWithRoles(@RequestBody Map<String, Boolean> selectedUsers,
                                                   @PathVariable("role") String r) {
         Role rr = roleRepository.findById(r).get();
-        Role NoneRole = new Role();
-        NoneRole.setRoleName("None");
-        NoneRole.setRoleDescription("None role");
-        roleRepository.save(NoneRole);
+        Role noneRole = roleRepository.findRoleByRoleName("None");
+
+        if (noneRole == null) {
+            noneRole = new Role();
+            noneRole.setRoleName("None");
+            noneRole.setRoleDescription("None role");
+            roleRepository.save(noneRole);
+        }
+
         // Fetch all users from the repository
         List<User> userList = userRepository.findAll();
 
@@ -58,9 +63,11 @@ public class RoleController {
                 userRoles.add(rr);
                 user.setRole(userRoles);
             } else {
-                Set<Role> userRoles = new HashSet<>();
-                userRoles.add(NoneRole);
-                user.setRole(userRoles);
+                if (user.getRole().size() == 1 && user.getRole().contains(rr)) {
+                    Set<Role> userRoles = new HashSet<>();
+                    userRoles.add(noneRole);
+                    user.setRole(userRoles);
+                }
             }
         }
 
