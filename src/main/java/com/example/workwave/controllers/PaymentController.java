@@ -143,23 +143,23 @@ public class PaymentController {
         List<Double> payments = paymentRepository.getPaymentsBySenderBankAccountIdToday(senderBankAccountId);
         return ResponseEntity.ok().body(payments);
     }
-    @GetMapping("/{senderBankAccountId}/payment-percentage-change")
-    public ResponseEntity<Double> getPaymentPercentageChange(@PathVariable Long senderBankAccountId) {
-        LocalDate yesterday = LocalDate.now().minusDays(1);
-
-        Date yesterdayDate = Date.from(yesterday.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Double totalAmountPaidToday = paymentRepository.getTotalAmountPaidToday(senderBankAccountId);
-        Double totalAmountPaidYesterday = paymentRepository.getTotalAmountPaidYesterday(senderBankAccountId,yesterdayDate);
-
-        if (totalAmountPaidYesterday == null || totalAmountPaidYesterday == 0) {
-            return ResponseEntity.badRequest().body(null);
-        }
-
-        Double difference = totalAmountPaidToday - totalAmountPaidYesterday;
-        Double percentageChange = (difference / totalAmountPaidYesterday) * 100.0;
-
-        return ResponseEntity.ok().body(percentageChange);
-    }
+  //  @GetMapping("/{senderBankAccountId}/payment-percentage-change")
+  //  public ResponseEntity<Double> getPaymentPercentageChange(@PathVariable Long senderBankAccountId) {
+  //      LocalDate yesterday = LocalDate.now().minusDays(1);
+//
+  //      Date yesterdayDate = Date.from(yesterday.atStartOfDay(ZoneId.systemDefault()).toInstant());
+  //      Double totalAmountPaidToday = paymentRepository.getTotalAmountPaidToday(senderBankAccountId);
+  //      Double totalAmountPaidYesterday = paymentRepository.getTotalAmountPaidYesterday(senderBankAccountId,yesterdayDate);
+//
+  //      if (totalAmountPaidYesterday == null || totalAmountPaidYesterday == 0) {
+  //          return ResponseEntity.badRequest().body(null);
+  //      }
+//
+  //      Double difference = totalAmountPaidToday - totalAmountPaidYesterday;
+  //      Double percentageChange = (difference / totalAmountPaidYesterday) * 100.0;
+//
+  //      return ResponseEntity.ok().body(percentageChange);
+  //  }
 
 
 

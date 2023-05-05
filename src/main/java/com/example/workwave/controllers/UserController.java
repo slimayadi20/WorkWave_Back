@@ -48,10 +48,10 @@ public class UserController {
     private OtpRepository otpRepository;
     @Autowired
     private JavaMailSender mailSender;
-// @PostConstruct //lors de l'execution
-// public void initRoleAndUser() {
-//      userService.initRolesAndUser();
-// }
+ @PostConstruct //lors de l'execution
+ public void initRoleAndUser() {
+      userService.initRolesAndUser();
+ }
 
 
     @GetMapping(path = "/ImgUsers/{userName}")

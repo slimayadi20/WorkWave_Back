@@ -100,7 +100,7 @@ public class BudgetController {
         for (Budget budget : declinedBudgets) {
             Project project = budget.getProject();
             project.setBudget(null);
-            budgetRepository.delete(budget);
+//            budgetRepository.delete(budget);
         }
     }
 }

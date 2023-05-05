@@ -194,7 +194,9 @@ public class User {
         this.tasks = tasks;
     }
 
-
+    public Set<Project> getProjet() {
+        return projet;
+    }
 
     public String getEtat() {
         return etat;
