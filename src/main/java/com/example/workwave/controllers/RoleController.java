@@ -25,6 +25,11 @@ public class RoleController {
     @Autowired
     private UserRepository userRepository;
 
+    @DeleteMapping("/role/{id}")
+    public ResponseEntity<?> deleterole(@PathVariable("id") String id) {
+        return roleService.deleterole(id);
+    }
+
     @PostMapping({"/createNewRole"})
     public Role createNewRole(@RequestBody Role role) {
         return roleService.createNewRole(role);
@@ -77,6 +82,4 @@ public class RoleController {
 
         return ResponseEntity.ok("Users created with roles successfully");
     }
-
-
 }
