@@ -4,6 +4,8 @@ import com.example.workwave.entities.products;
 import com.example.workwave.repositories.productsRepository;
 import com.example.workwave.services.productsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,10 +65,16 @@ public class productsController {
 
 
 
-    @GetMapping("/products")//affichage+pagination
+   @GetMapping("/products")//affichage+pagination
     public List<products> show() {
         return productsservice.GetAllproducts();
 
+    }
+
+    @GetMapping("/productss")//affichage+pagination
+    public Page<products> showPage(@RequestParam(defaultValue = "0") int page) {
+        PageRequest pageRequest = PageRequest.of(page, 2);
+        return productsRepository.findAll(pageRequest);
     }
     @GetMapping(path = "/getproduct/{product}")
     public products getproduct(@PathVariable("product") long p_id) throws Exception {

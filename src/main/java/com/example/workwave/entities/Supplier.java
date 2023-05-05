@@ -14,11 +14,11 @@ public class Supplier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String name;
+    private  String name;
 
     private String address;
 
-    private String email;
+    private  String email;
 
 
     @ManyToMany(fetch = FetchType.LAZY)
