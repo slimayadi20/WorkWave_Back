@@ -2,7 +2,6 @@ package com.example.workwave.controllers;
 
 
 import com.example.workwave.entities.JwtRequest;
-import com.example.workwave.entities.JwtResponse;
 import com.example.workwave.entities.User;
 import com.example.workwave.repositories.UserRepository;
 import com.example.workwave.services.JwtService;
@@ -10,13 +9,15 @@ import com.example.workwave.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Optional;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -35,58 +36,97 @@ public class JwtController {
         System.out.println(jwtRequest.getPassword());
         return jwtService.createJwtToken(jwtRequest);
     }
-    /*
-    @PostMapping("/auth/face")
-    public ResponseEntity<?> authenticateWithFace(@RequestParam("username") String username,
-                                                  @RequestParam("image") MultipartFile image) throws Exception {
 
-        Optional<User> userOptional = userRepository.findById(username);
 
-        if (!userOptional.isPresent()) {
-            throw new UsernameNotFoundException("User not found");
+    @PostMapping({"/faceAuthenticate"})
+    public ResponseEntity<?> aa(@RequestBody User user) throws Exception {
+        User u = userRepository.findById(user.getUserName()).get();
+        System.out.println(u.isTfa());
+        if(u.isTfa()==true) {
+            String scriptPath = "src/main/resources/Face-Recog38/reco.py";
+            String pythonPath = "C:/Users/MSI/AppData/Local/Programs/Python/Python310/python.exe";// wheere pythin
+            ProcessBuilder processBuilder = new ProcessBuilder(pythonPath, scriptPath);
+            processBuilder.redirectErrorStream(true);
+            Process process = processBuilder.start();
+
+            // Read the output from the script
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder output = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line.trim()).append("\n");
+            }
+            System.out.println(output);
+
+            if (output.toString().startsWith("authenticated")) {
+                String userId = output.toString().split(" ")[1];
+                System.out.println("User ID: " + userId);
+                System.out.println("User ID:2 " + u.getUserName().toString());
+
+                if (u.getUserName().equals(userId.trim())) {
+                    System.out.println("Face authenticated");
+                    // return an access token and user object
+                    return jwtService.createJwtTokenFace(userId.trim());
+                } else {
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("message", "not authenticated");
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+                }
+            } else {
+                System.out.println("nrm");
+                Map<String, Object> response = new HashMap<>();
+                response.put("message", "not authenticated");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
         }
-
-        User user = userOptional.get();
-
-        IFaceClient faceClient = new FaceClientBuilder()
-                .endpoint(user.getFaceApiEndpoint())
-                .credential(new AzureKeyCredential(user.getFaceApiKey()))
-                .buildClient();
-
-        // Detect faces in the login image
-        ByteArrayInputStream imageStream = new ByteArrayInputStream(image.getBytes());
-        DetectResult[] detectResults = faceClient.face().detectInStream()
-                .withImage(imageStream)
-                .withDetectionModel(DetectionModel.DETECTION_02)
-                .execute();
-
-        if (detectResults.length != 1) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Invalid image: Only one face must be present.");
-        }
-
-        // Verify the detected face against the user's face ID
-        String detectedFaceId = detectResults[0].faceId().toString();
-        VerifyResult verifyResult = faceClient.face().verify()
-                .faceId(detectedFaceId)
-                .faceId2(user.getFaceId())
-                .execute();
-
-        if (verifyResult.isIdentical() && verifyResult.confidence() >= CONFIDENCE_THRESHOLD) {
-            // If faces match, create a token
-
-            System.out.println("user  logged in");
-            UserDetails userDetails = jwtService.loadUserByUsername(username);
-
-            String newGeneratedToken = jwtUtil.generateToken(userDetails);
-
-            return ResponseEntity.ok(new JwtResponse(user, newGeneratedToken));
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("Face verification failed.");
+        else{
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "tfa disabled");
+            return ResponseEntity.status(403).body(response);
         }
     }
-}*/
+  /*  @PostMapping({"/addproduct"})
+    public ResponseEntity<?> aa(@RequestBody products p) throws Exception {
+            String scriptPath = "src/main/resources/Face-Recog38/reco.py";
+            String pythonPath = "C:/Users/MSI/AppData/Local/Programs/Python/Python310/python.exe";// wheere pythin
+            ProcessBuilder processBuilder = new ProcessBuilder(pythonPath, scriptPath);
+            processBuilder.redirectErrorStream(true);
+            Process process = processBuilder.start();
 
+            // Read the output from the script
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder output = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line.trim()).append("\n");
+            }
+            System.out.println(output);
 
+            if (output.toString().startsWith("authenticated")) {
+                String userId = output.toString().split(" ")[1];
+                System.out.println("User ID: " + userId);
+                System.out.println("User ID:2 " + u.getUserName().toString());
+
+                if (u.getUserName().equals(userId.trim())) {
+                    System.out.println("Face authenticated");
+                    // return an access token and user object
+                    return jwtService.createJwtTokenFace(userId.trim());
+                } else {
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("message", "not authenticated");
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+                }
+            } else {
+                System.out.println("nrm");
+                Map<String, Object> response = new HashMap<>();
+                response.put("message", "not authenticated");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+        }
+
+    }*/
 }
+
+
+
+

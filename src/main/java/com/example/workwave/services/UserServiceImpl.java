@@ -9,7 +9,6 @@ import com.example.workwave.repositories.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.bytebuddy.utility.RandomString;
-import org.apache.catalina.connector.Response;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +19,12 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletContext;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.*;
 
 @Service
@@ -39,29 +35,27 @@ public class UserServiceImpl {
 
     @Autowired
     RoleRepository roleRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Autowired
     ServletContext context;
     @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
     private JavaMailSender javaMailSender;
 
-    public void initRolesAndUser(){
-        Role adminRole=new Role();
+    public void initRolesAndUser() {
+        Role adminRole = new Role();
         adminRole.setRoleName("Admin");
         adminRole.setRoleDescription("Admin role");
         roleRepository.save(adminRole);
 
-        Role etudiantRole=new Role();
+        Role etudiantRole = new Role();
         etudiantRole.setRoleName("Project manager");
         etudiantRole.setRoleDescription("Project manager role");
         roleRepository.save(etudiantRole);
 
         //Ajout de l'admin dans la base
         User adminUser = new User();
-        adminUser.setFileName("imagecv.jpg");
+        adminUser.setFileName("slim961.jpg");
         adminUser.setPrenom("slim");
         adminUser.setNom("ayadi");
         adminUser.setEmail("slim.ayadi@esprit.tn");
@@ -83,14 +77,14 @@ public class UserServiceImpl {
 
     public ResponseEntity<Map<String, String>> registerNewUser(User user) throws JsonProcessingException {
         try {
-                Role role = roleRepository.findById("Admin").get();
-                String token = RandomString.make(30);
-                user.setToken(token);
-                Set<Role> userRoles = new HashSet<>();
-                userRoles.add(role);
-                user.setRole(userRoles);
-                user.setPassword(getEncodedPassword(user.getPassword()));
-                User savedUser = userRepository.save(user);
+            Role role = roleRepository.findById("Admin").get();
+            String token = RandomString.make(30);
+            user.setToken(token);
+            Set<Role> userRoles = new HashSet<>();
+            userRoles.add(role);
+            user.setRole(userRoles);
+            user.setPassword(getEncodedPassword(user.getPassword()));
+            User savedUser = userRepository.save(user);
 
             if (savedUser != null) {
                 // Send activation email to user
@@ -113,6 +107,7 @@ public class UserServiceImpl {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
     private void sendEmail(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
@@ -121,11 +116,11 @@ public class UserServiceImpl {
         javaMailSender.send(message);
     }
 
-    public byte[] getPhoto(String userName) throws Exception{
-        User user   = userRepository.findById(userName).get();
-        return Files.readAllBytes(Paths.get(context.getRealPath("/Images/")+user.getFileName()));
+    public byte[] getPhoto(String userName) throws Exception {
+        User user = userRepository.findById(userName).get();
+        String filePath = "src/main/resources/Face-Recog38/faces/" + user.getFileName();
+        return Files.readAllBytes(Paths.get(filePath));
     }
-
 
     public User updateUser(User user) {
         User existingUser = userRepository.findById(user.getUserName()).orElse(null);
@@ -137,9 +132,19 @@ public class UserServiceImpl {
         existingUser.setPhoneNumber(user.getPhoneNumber());
 
         return userRepository.save(existingUser);
-    }    public User updateban(User user) {
+    }
+
+    public User updateban(User user) {
         User existingUser = userRepository.findById(user.getUserName()).orElse(null);
         existingUser.setBan(user.isBan());
+
+
+        return userRepository.save(existingUser);
+    }
+
+    public User updatetfa(User user) {
+        User existingUser = userRepository.findById(user.getUserName()).orElse(null);
+        existingUser.setTfa(user.isTfa());
 
 
         return userRepository.save(existingUser);
@@ -150,30 +155,31 @@ public class UserServiceImpl {
         User existingUser = userRepository.findById(us.getUserName()).orElse(null);
 
         System.out.println(us.getPassword());
-        boolean isExit = new File(context.getRealPath("/Images/")).exists();
-        if (!isExit)
-        {
-            new File (context.getRealPath("/Images/")).mkdir();
-            System.out.println("mk dir.............");
-        }
-        String filename = file.getOriginalFilename();
-        String newFileName = FilenameUtils.getBaseName(filename)+"."+ FilenameUtils.getExtension(filename);
-        File serverFile = new File (context.getRealPath("/Images/"+File.separator+newFileName));
-        try
-        {
-            System.out.println("Image");
-            FileUtils.writeByteArrayToFile(serverFile,file.getBytes());
 
-        }catch(Exception e) {
+        // Check if directory exists, create it if necessary
+        String directoryPath = "src/main/resources/Face-Recog38/faces/";
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        String filename = file.getOriginalFilename();
+        String newFileName = us.getUserName() + "-" + us.getUserName() + "." + FilenameUtils.getExtension(filename);
+        File serverFile = new File(directoryPath + newFileName);
+        try {
+            System.out.println("Image");
+            FileUtils.writeByteArrayToFile(serverFile, file.getBytes());
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         existingUser.setFileName(newFileName);
 
-
         return userRepository.save(existingUser);
     }
-    public boolean ifEmailExist(String mail){
+
+    public boolean ifEmailExist(String mail) {
         return userRepository.existsByEmail(mail);
     }
 
@@ -188,9 +194,10 @@ public class UserServiceImpl {
     }
 
 
-    public User GetUserByUsername(String userName){
-        return  userRepository.findById(userName).get();
+    public User GetUserByUsername(String userName) {
+        return userRepository.findById(userName).get();
     }
+
     public String updateToken(String token) throws UsernameNotFoundException {
         User user = userRepository.findByToken(token);
         if (user != null) {
@@ -201,7 +208,6 @@ public class UserServiceImpl {
             throw new UsernameNotFoundException("Could not find any User with the token");
         }
     }
-
 
 
     public void updatePassword(User user, String newPassword) {

@@ -46,7 +46,7 @@ public class UserController {
     private OtpRepository otpRepository;
     @Autowired
     private JavaMailSender mailSender;
-  /*  @PostConstruct //lors de l'execution
+   /* @PostConstruct //lors de l'execution
     public void initRoleAndUser() {
         userService.initRolesAndUser();
     }*/
@@ -79,6 +79,16 @@ public class UserController {
 
     }
 
+    @GetMapping("/userbyrole/{role}")//affichage+pagination
+    public List<User> showUsersByRole(@PathVariable("role") String role) {
+        if (role != null && !role.isEmpty()) {
+            Role role1 = roleRepository.findRoleByRoleName(role);
+            return userRepository.findByRole(role1);
+        }
+        return null;
+
+    }
+
     @PostMapping({"/registerNewUser"})
     public ResponseEntity<Map<String, String>> registerNewUser(@RequestBody User user) throws JsonProcessingException {
         return userService.registerNewUser(user);
@@ -94,6 +104,11 @@ public class UserController {
         return userService.updateban(user);
     }
 
+    @PutMapping("/tfaUser")
+    public User tfaUser(@RequestBody User user) {
+        return userService.updatetfa(user);
+    }
+
     @PutMapping("/updateimage")
     public User updateUserimage(@RequestParam("user") String user, @RequestParam("file") MultipartFile file) throws JsonProcessingException {
         System.out.println(user);
@@ -105,75 +120,7 @@ public class UserController {
     public User getUserByUsername(@PathVariable("userName") String userName) throws Exception {
         return userService.GetUserByUsername(userName);
     }
-   /* public void sendEmail(String recipientEmail, String link)
-            throws MessagingException, UnsupportedEncodingException {
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
 
-        helper.setFrom("slim.ayadi@esprit.tn", "workwave Support");
-        helper.setTo(recipientEmail);
-
-        String subject = "Here's the link to reset your password";
-
-        String content = "<p>Hello,</p>"
-                + "<p>You have requested to reset your password.</p>"
-                + "<p>Click the link below to change your password:</p>"
-                + "<p><a href=\"" + link + "\">Change my password</a></p>"
-                + "<br>"
-                + "<p>Ignore this email if you do remember your password, "
-                + "or you have not made the request.</p>";
-
-        helper.setSubject(subject);
-
-        helper.setText(content, true);
-
-        mailSender.send(message);
-    }*/
-  /*  @PostMapping("/forgot_password")
-    public ResponseEntity<Object> processForgotPassword(@RequestBody Map<String, Object> payload) {
-        String token = RandomString.make(30);
-
-        try {
-            userService.updateResetPasswordToken(token, payload.get("email").toString());
-            String resetPasswordLink = "http://localhost:4200/reset-password/" + token;
-            sendEmail(payload.get("email").toString(), resetPasswordLink);
-            return ResponseEntity.ok().build();
-        } catch (UsernameNotFoundException ex) {
-            return ResponseEntity.badRequest().body(ex.getMessage());
-        } catch (UnsupportedEncodingException | MessagingException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while sending email");
-        }
-    }*/
-
-    /*  @PostMapping("/reset_password")
-      public ResponseEntity<User> showResetPasswordForm(@RequestBody String token) {
-          User user = null;
-
-          try {
-              user = userService.getByResetPasswordToken(token);
-
-              if (user == null) {
-                  return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-              }
-
-              return ResponseEntity.ok(user);
-          } catch (Exception e) {
-              return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-          }
-      }*/
-  /*  @PostMapping("/reset_password")
-    public ResponseEntity<Map<String, String>> resetPassword(@RequestBody Map<String, Object> payload) {
-        User user = userService.getByResetPasswordToken(payload.get("token").toString());
-
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        } else {
-            userService.updatePassword(user, payload.get("password").toString());
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "ok");
-            return ResponseEntity.ok().body(response);
-        }
-    }*/
     @GetMapping("/activate/{token}")
     public ResponseEntity<String> activateAccount(@PathVariable String token, HttpServletResponse response) {
 
@@ -242,7 +189,7 @@ public class UserController {
 
     }
 
-    @Scheduled(fixedDelay = 120000) // run every 2 minutes
+   // @Scheduled(fixedDelay = 120000) // run every 2 minutes
     public void deleteExpiredOtps() {
         List<otp> expiredOtps = otpRepository.findByCreatedAtBefore(LocalDateTime.now().minusMinutes(2));
         otpRepository.deleteAll(expiredOtps);

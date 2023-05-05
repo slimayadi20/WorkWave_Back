@@ -1,22 +1,21 @@
 package com.example.workwave.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="userName")
+
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userName")
 
 @Entity
 public class User {
     @Id
-    @Column(unique=true)
+    @Column(unique = true)
     private String userName;
     private String nom;
     private String prenom;
@@ -28,24 +27,42 @@ public class User {
     private int phoneNumber;
     @Column(name = "token")
     private String token;
-    private boolean ban ;
+    private boolean ban;
+    private boolean tfa;
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<holiday> holidays = new ArrayList<>();
-    @ManyToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Project> projet;
-
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "USER_ROLE",
+            joinColumns = {@JoinColumn(name = "USER_ID")},
+            inverseJoinColumns = {
+                    @JoinColumn(name = "ROLE_ID")})
+    private Set<Role> role;
 
     public User() {
 
     }
 
+
     public <E> User(String userName, String password, ArrayList<E> es) {
 
     }
 
+    public User(String userName, String nom, String prenom, String password, String email, String fileName, Gender gender, int phoneNumber, Set<Role> role) {
+        this.userName = userName;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.password = password;
+        this.email = email;
+        this.fileName = fileName;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+    }
 
     public List<holiday> getHolidays() {
         return holidays;
@@ -55,14 +72,6 @@ public class User {
         this.holidays = holidays;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "USER_ROLE",
-            joinColumns = { @JoinColumn(name = "USER_ID") },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "ROLE_ID") })
-        private Set<Role> role;
-
-
     public String getToken() {
         return token;
     }
@@ -70,7 +79,6 @@ public class User {
     public void setToken(String Token) {
         this.token = Token;
     }
-
 
     public Gender getGender() {
         return gender;
@@ -144,7 +152,6 @@ public class User {
         this.fileName = fileName;
     }
 
-
     public Set<Project> getProjet() {
         return projet;
     }
@@ -161,16 +168,12 @@ public class User {
         this.ban = ban;
     }
 
-    public User(String userName, String nom, String prenom, String password, String email, String fileName, Gender gender, int phoneNumber, Set<Role> role) {
-        this.userName = userName;
-        this.nom = nom;
-        this.prenom = prenom;
-        this.password = password;
-        this.email = email;
-        this.fileName = fileName;
-        this.gender = gender;
-        this.phoneNumber = phoneNumber;
-        this.role = role;
+    public boolean isTfa() {
+        return tfa;
+    }
+
+    public void setTfa(boolean tfa) {
+        this.tfa = tfa;
     }
 
 }

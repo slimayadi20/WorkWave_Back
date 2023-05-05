@@ -7,7 +7,6 @@ import com.example.workwave.entities.User;
 import com.example.workwave.repositories.UserRepository;
 import com.example.workwave.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,21 +24,19 @@ import java.util.Set;
 
 @Service
 public class JwtService implements UserDetailsService {
-   @Autowired
+    @Autowired
+    JwtUtil jwtUtil;
+    UserServiceImpl userService;
+    @Autowired
     private UserRepository userRepository;
-
-   @Autowired
-   JwtUtil jwtUtil;
-
-   @Autowired
-   private AuthenticationManager authenticationManager;
-    UserServiceImpl userService ;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     public ResponseEntity<?> createJwtToken(JwtRequest jwtRequest) throws Exception {
         String userName = jwtRequest.getUserName();
         Optional<User> userOptional = userRepository.findById(userName);
 
-        if( userOptional.get().getToken() != null){
+        if (userOptional.get().getToken() != null) {
             // If the user already has a token, return it
             System.out.println("user not logged in");
             return ResponseEntity.status(403).body("Account not activated");
@@ -56,6 +53,19 @@ public class JwtService implements UserDetailsService {
 
             return ResponseEntity.ok(new JwtResponse(user, newGeneratedToken));
         }
+    }
+
+    public ResponseEntity<?> createJwtTokenFace(String userName) throws Exception {
+        Optional<User> userOptional = userRepository.findById(userName);
+
+        User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        System.out.println("user  logged in");
+
+        UserDetails userDetails = loadUserByUsername(userName);
+        String newGeneratedToken = jwtUtil.generateToken(userDetails);
+
+        return ResponseEntity.ok(new JwtResponse(user, newGeneratedToken));
     }
 
     @Override
