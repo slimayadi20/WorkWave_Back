@@ -58,6 +58,11 @@ public class BudgetServiceImpl {
             throw new RuntimeException("Budget not found");
         }
 
+        BankAccount bankAccount = budget.getBankAccount();
+        bankAccount.setBalance(bankAccount.getBalance()- budget.getAmount());
+
+
+
         budget.setStatusBudget(StatusBudget.Approved);
         budgetRepository.save(budget);
 

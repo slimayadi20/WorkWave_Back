@@ -98,9 +98,10 @@ public class BudgetController {
     public void deleteDeclinedBudgets() {
         List<Budget> declinedBudgets = budgetRepository.findByStatusBudget(StatusBudget.Declined);
         for (Budget budget : declinedBudgets) {
+            Project project = budget.getProject();
+            project.setBudget(null);
             budgetRepository.delete(budget);
         }
     }
-
 }
 
