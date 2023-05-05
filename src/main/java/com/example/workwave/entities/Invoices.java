@@ -40,12 +40,22 @@ public class Invoices {
 
     private LocalDateTime updatedAt;
 
+    @OneToOne(mappedBy = "invoices")
+    private Order order;
 
     @JsonBackReference
     @ManyToOne
     private BankAccount bankAccount;
     public Invoices() {
 
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public Long getId() {

@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -125,5 +127,44 @@ public class PaymentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+//    ----------------- STATISTICSSSS ----------------------
+
+    @GetMapping("/totalAmountPaidBySenderBankAccountId")
+    public ResponseEntity<Double> getTotalAmountPaidBySenderBankAccountId(@RequestParam Long senderBankAccountId) {
+        Double totalAmountPaid = paymentRepository.getTotalAmountPaidBySenderBankAccountId(senderBankAccountId);
+        return ResponseEntity.ok(totalAmountPaid);
+    }
+    @GetMapping("/{senderBankAccountId}/payments-this-month")
+    public ResponseEntity<List<Double>> getPaymentsBySenderBankAccountIdThisMonth(@PathVariable Long senderBankAccountId) {
+        List<Double> payments = paymentRepository.getPaymentsBySenderBankAccountIdThisMonth(senderBankAccountId);
+        return ResponseEntity.ok().body(payments);
+    }
+    @GetMapping("/{senderBankAccountId}/payments-today")
+    public ResponseEntity<List<Double>> getPaymentsBySenderBankAccountIdToday(@PathVariable Long senderBankAccountId) {
+        List<Double> payments = paymentRepository.getPaymentsBySenderBankAccountIdToday(senderBankAccountId);
+        return ResponseEntity.ok().body(payments);
+    }
+    @GetMapping("/{senderBankAccountId}/payment-percentage-change")
+    public ResponseEntity<Double> getPaymentPercentageChange(@PathVariable Long senderBankAccountId) {
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+
+        Date yesterdayDate = Date.from(yesterday.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Double totalAmountPaidToday = paymentRepository.getTotalAmountPaidToday(senderBankAccountId);
+        Double totalAmountPaidYesterday = paymentRepository.getTotalAmountPaidYesterday(senderBankAccountId,yesterdayDate);
+
+        if (totalAmountPaidYesterday == null || totalAmountPaidYesterday == 0) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        Double difference = totalAmountPaidToday - totalAmountPaidYesterday;
+        Double percentageChange = (difference / totalAmountPaidYesterday) * 100.0;
+
+        return ResponseEntity.ok().body(percentageChange);
+    }
+
+
+
+
+
 
 }

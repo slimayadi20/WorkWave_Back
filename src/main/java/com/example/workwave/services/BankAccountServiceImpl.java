@@ -7,9 +7,8 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.ServletContext;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 
@@ -57,6 +56,30 @@ public class BankAccountServiceImpl {
             throw new EntityNotFoundException("Bank Account not found with id " + id);
         }
     }
+//**************************************************************************************
+public List<Map<String, Object>> getBalanceHistoryWithPercentageChange(Long accountId, Double currentBalance) {
+    List<Object[]> balanceHistory = bankAccountRepository.getBalanceHistory(accountId);
+    List<Map<String, Object>> result = new ArrayList<>();
+    Double previousBalance = currentBalance;
+    for (Object[] row : balanceHistory) {
+        Map<String, Object> data = new HashMap<>();
+        LocalDate date = ((java.sql.Date) row[0]).toLocalDate();
+        Double newbalance =  (Double) row[1];
+        if (newbalance == null || newbalance == 0.0) {
+            newbalance = previousBalance;
+        } else {
+            previousBalance += newbalance;
+        }
+
+        Double percentageChange = previousBalance != null && previousBalance != 0.0 ? ((previousBalance - newbalance ) / newbalance) /100 : null;
+
+        data.put("date", date);
+        data.put("balance", previousBalance);
+        data.put("percentageChange", percentageChange);
+        result.add(data);
+    }
+    return result;
+}
 
 
 }

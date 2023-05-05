@@ -22,6 +22,8 @@ public class Order {
     @Temporal(TemporalType.DATE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date orderDate;
+    @OneToOne
+    private Invoices invoices;
 
     @ManyToMany
     Set<Supplier> supplier;

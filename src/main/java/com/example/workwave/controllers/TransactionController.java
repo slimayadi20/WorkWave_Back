@@ -5,6 +5,7 @@ import com.example.workwave.entities.*;
 import com.example.workwave.repositories.*;
 import com.example.workwave.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,8 @@ public class TransactionController {
     BankAccountRepository bankAccountRepository;
     @Autowired
     TransactionServiceImpl transactionService;
+
+
 
     @PostMapping("/addTransaction")
     public String addTransaction(Transactions transaction) {
@@ -62,10 +65,24 @@ public class TransactionController {
         BankAccount bankAccount = bankAccountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bank Account not found"));
 
-        List<Transactions> transactions = transactionRepository.findByBankAccount(bankAccount);
+        List<Transactions> transactions = transactionRepository.findByBankAccount_Id(bankAccount.getId());
         if (transactions == null) {
             throw new RuntimeException("Transaction not found for Bank Account");
         }
         return transactions;
     }
+    // ***************** STATISTICSSS ********************
+    @GetMapping("/{bankAccountId}/transactions-count-by-month")
+    public ResponseEntity<Long> getTransactionsCountByMonthAndBankAccountId(@PathVariable Long bankAccountId) {
+        Long count = transactionRepository.countTransactionsByMonthAndBankAccountId(bankAccountId);
+        return ResponseEntity.ok().body(count);
+    }
+    @GetMapping("/{bankAccountId}/transaction-count-today")
+    public ResponseEntity<Long> getTransactionCountByBankAccountIdToday(@PathVariable Long bankAccountId) {
+        Long transactionCount = transactionRepository.getTransactionCountByBankAccountIdToday(bankAccountId);
+        return ResponseEntity.ok().body(transactionCount);
+    }
+
+
+
 }

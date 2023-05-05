@@ -6,6 +6,7 @@ import com.example.workwave.repositories.*;
 import com.example.workwave.services.BankAccountServiceImpl;
 import com.example.workwave.services.ProjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -113,4 +114,24 @@ public class BankAccountController {
         }
         return account;
     }
+    //****************************************
+    @GetMapping("/bank-accounts/{bankAccountId}/average-transaction-amount")
+    public ResponseEntity<Double> getAverageTransactionAmountByBankAccountId(@PathVariable Long bankAccountId) {
+        Double averageTransactionAmount = transactionRepository.getAverageTransactionAmountByBankAccountId(bankAccountId);
+        return ResponseEntity.ok().body(averageTransactionAmount);
+    }
+
+    @GetMapping("/{accountId}/balance-history")
+    public ResponseEntity<List<Map<String, Object>>> getBalanceHistoryWithPercentageChange(
+            @PathVariable Long accountId,
+            @RequestParam(required = false) Double currentBalance) {
+        if (currentBalance == null) {
+            // Fetch the current balance from the database if not provided as a parameter
+            // Here, assuming that you have a method called getCurrentBalance in your BankAccountRepository
+            currentBalance = bankAccountRepository.findById(accountId).get().getBalance();
+        }
+        List<Map<String, Object>> balanceHistoryWithPercentageChange = bankAccountService.getBalanceHistoryWithPercentageChange(accountId, currentBalance);
+        return ResponseEntity.ok(balanceHistoryWithPercentageChange);
+    }
+
 }
