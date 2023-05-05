@@ -39,8 +39,14 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<holiday> holidays = new ArrayList<>();
+
+
     @ManyToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Project> projet;
+
+    @ManyToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Task> tasks;
+
 
 
     public User() {
@@ -163,9 +169,9 @@ public class User {
     }
 
 
-    public Set<Project> getProjet() {
+  /*  public Set<Project> getProjet() {
         return projet;
-    }
+    }*/
 
     public void setProjet(Set<Project> projet) {
         this.projet = projet;
@@ -177,6 +183,13 @@ public class User {
 
     public void setBan(boolean ban) {
         this.ban = ban;
+
+    public Set<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = tasks;
     }
 
     public User(String userName, String nom, String prenom, String password, String email, String fileName, Gender gender, int phoneNumber, Set<Role> role) {

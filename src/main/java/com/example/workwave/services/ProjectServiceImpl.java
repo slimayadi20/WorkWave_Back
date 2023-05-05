@@ -1,8 +1,10 @@
 package com.example.workwave.services;
 
 import com.example.workwave.entities.Project;
+import com.example.workwave.entities.ScrumBoard;
 import com.example.workwave.repositories.ProjectRepository;
 import com.example.workwave.repositories.ProjectRepository;
+import com.example.workwave.repositories.ScrumBoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,21 +18,28 @@ import java.util.Optional;
 public class ProjectServiceImpl {
     @Autowired
     ProjectRepository projectRepository;
+    @Autowired
+    ScrumBoardRepository scrumrepository;
 
     @Autowired
     ServletContext context;
+
     public List<Project> GetAllProject() {
         return projectRepository.findAll();
     }
 
-    public String addProject(Project c)  {
+    public String addProject(Project c) {
+
         projectRepository.save(c);
-        return "ok" ;
+        ScrumBoard scrum = new ScrumBoard();
+        scrum.setProject(projectRepository.findByProjectname(c.getProjectname()));
+        scrumrepository.save(scrum);
+        return "ok";
     }
 
     public String deleteProject(Long idProject) {
         projectRepository.deleteById(idProject);
-        return "Certif removed !! " + idProject;
+        return "project removed !! " + idProject;
     }
 
 
@@ -40,6 +49,7 @@ public class ProjectServiceImpl {
 
         return projectRepository.save(project);
     }
+
     public Project getProjectById(Long id) {
         Optional<Project> optionalProject = projectRepository.findById(id);
         if (optionalProject.isPresent()) {

@@ -29,6 +29,8 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -87,6 +89,18 @@ public class UserController {
     @PutMapping("/updateUser")
     public User updateUser(@RequestBody User user) {
         return userService.updateUser(user);
+    @GetMapping("/usernames")
+    public List<String> getAllUsernames() {
+        List<User> users = userRepository.findAll();
+        List<String> usernames = new ArrayList<>();
+        for (User user : users) {
+            usernames.add(user.getUserName());
+        }
+        return usernames;
+    }
+    @PutMapping("/updateUser/{userName}")
+    public User updateUser(@RequestBody User user, @PathVariable("userName") String userName) {
+        return userService.updateUser(user, userName);
     }
 
     @PutMapping("/banUser")
