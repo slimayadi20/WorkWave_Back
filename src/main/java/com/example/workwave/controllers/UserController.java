@@ -48,11 +48,11 @@ public class UserController {
     private OtpRepository otpRepository;
     @Autowired
     private JavaMailSender mailSender;
- // @PostConstruct //lors de l'execution
- // public void initRoleAndUser() {
- //      userService.initRolesAndUser();
- // }
-//
+// @PostConstruct //lors de l'execution
+// public void initRoleAndUser() {
+//      userService.initRolesAndUser();
+// }
+
 
     @GetMapping(path = "/ImgUsers/{userName}")
     public byte[] getPhoto(@PathVariable("userName") String userName) throws Exception {
@@ -89,19 +89,8 @@ public class UserController {
     @PutMapping("/updateUser")
     public User updateUser(@RequestBody User user) {
         return userService.updateUser(user);
-    @GetMapping("/usernames")
-    public List<String> getAllUsernames() {
-        List<User> users = userRepository.findAll();
-        List<String> usernames = new ArrayList<>();
-        for (User user : users) {
-            usernames.add(user.getUserName());
-        }
-        return usernames;
     }
-    @PutMapping("/updateUser/{userName}")
-    public User updateUser(@RequestBody User user, @PathVariable("userName") String userName) {
-        return userService.updateUser(user, userName);
-    }
+
 
     @PutMapping("/banUser")
     public User banUser(@RequestBody User user) {

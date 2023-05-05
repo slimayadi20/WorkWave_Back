@@ -126,8 +126,6 @@ public class BankAccountController {
             @PathVariable Long accountId,
             @RequestParam(required = false) Double currentBalance) {
         if (currentBalance == null) {
-            // Fetch the current balance from the database if not provided as a parameter
-            // Here, assuming that you have a method called getCurrentBalance in your BankAccountRepository
             currentBalance = bankAccountRepository.findById(accountId).get().getBalance();
         }
         List<Map<String, Object>> balanceHistoryWithPercentageChange = bankAccountService.getBalanceHistoryWithPercentageChange(accountId, currentBalance);

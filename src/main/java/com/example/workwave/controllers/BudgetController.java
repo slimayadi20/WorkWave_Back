@@ -11,9 +11,11 @@ import com.example.workwave.services.BudgetServiceImpl;
 import com.example.workwave.services.ProjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -76,21 +78,29 @@ public class BudgetController {
         return budget;
     }
     @PostMapping("/requestBudget")
-    public ResponseEntity<Budget> requestBudget(@RequestBody Long ProjectID, @RequestParam Double Amount) {
-        Budget requestedBudget = budgetService.requestBudget(ProjectID, Amount);
+    public ResponseEntity<Budget> requestBudget(@RequestParam Long ProjectID, @RequestParam Double Amount, @RequestParam Long BankAccountId) {
+        Budget requestedBudget = budgetService.requestBudget(ProjectID, Amount,BankAccountId);
         return ResponseEntity.ok(requestedBudget);
     }
 
     @PostMapping("/approveBudget/{budgetId}")
-    public ResponseEntity<Budget> approveBudget(@PathVariable Long budgetId, @RequestParam String username) {
-        Budget approvedBudget = budgetService.approveBudget(budgetId, username);
+    public ResponseEntity<Budget> approveBudget(@PathVariable Long budgetId) {
+        Budget approvedBudget = budgetService.approveBudget(budgetId);
         return ResponseEntity.ok(approvedBudget);
     }
 
     @PostMapping("/declineBudget/{budgetId}")
-    public ResponseEntity<Budget> declineBudget(@PathVariable Long budgetId, @RequestParam String username) {
-        Budget declinedBudget = budgetService.declineBudget(budgetId, username);
+    public ResponseEntity<Budget> declineBudget(@PathVariable Long budgetId) {
+        Budget declinedBudget = budgetService.declineBudget(budgetId);
         return ResponseEntity.ok(declinedBudget);
     }
+    @Scheduled(fixedDelay = 120000) // run every 5 minutes
+    public void deleteDeclinedBudgets() {
+        List<Budget> declinedBudgets = budgetRepository.findByStatusBudget(StatusBudget.Declined);
+        for (Budget budget : declinedBudgets) {
+            budgetRepository.delete(budget);
+        }
+    }
+
 }
 

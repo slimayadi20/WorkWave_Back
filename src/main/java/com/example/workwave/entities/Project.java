@@ -39,30 +39,7 @@ public class Project {
         return id;
     }
 
-    public Project(Long id, String project_name, String description, Date dateEmission, Date dateExpiration, String etat, Set<User> user, Budget budget) {
-        this.id = id;
-        this.project_name = project_name;
-        this.description = description;
-        this.dateEmission = dateEmission;
-        this.dateExpiration = dateExpiration;
-        this.etat = etat;
-        this.user = user;
-        this.budget = budget;
-    }
 
-    @Override
-    public String toString() {
-        return "Project{" +
-                "id=" + id +
-                ", project_name='" + project_name + '\'' +
-                ", description='" + description + '\'' +
-                ", dateEmission=" + dateEmission +
-                ", dateExpiration=" + dateExpiration +
-                ", etat='" + etat + '\'' +
-                ", user=" + user +
-                ", budget=" + budget +
-                '}';
-    }
 
     public Budget getBudget() {
         return budget;
@@ -75,8 +52,6 @@ public class Project {
     public void setId(Long id) {
         this.id = id;
     }
-
-
 
     public String getDescription() {
         return description;

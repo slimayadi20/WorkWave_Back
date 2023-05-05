@@ -114,7 +114,6 @@ public class PaymentController {
             @RequestParam("senderBankAccountId") Long senderBankAccountId,
             @RequestParam("receiverBankAccountId") Long receiverBankAccountId
     ) {
-        // Retrieve the user by ID
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
             return ResponseEntity.badRequest().body("User not found");

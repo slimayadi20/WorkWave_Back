@@ -183,6 +183,8 @@ public class User {
 
     public void setBan(boolean ban) {
         this.ban = ban;
+    }
+
 
     public Set<Task> getTasks() {
         return tasks;
@@ -192,20 +194,7 @@ public class User {
         this.tasks = tasks;
     }
 
-    public User(String userName, String nom, String prenom, String password, String email, String fileName, Gender gender, int phoneNumber, Set<Role> role) {
-        this.userName = userName;
-        this.nom = nom;
-        this.prenom = prenom;
-        this.password = password;
-        this.email = email;
-        this.fileName = fileName;
-        this.gender = gender;
-        this.phoneNumber = phoneNumber;
-        this.holidays = holidays;
-        this.projet = projet;
-        this.role = role;
-        this.bankAccount = bankAccount;
-    }
+
 
     public String getEtat() {
         return etat;
