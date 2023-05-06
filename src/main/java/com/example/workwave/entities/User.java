@@ -34,6 +34,8 @@ public class User {
     private String token;
     private boolean ban ;
 
+    @OneToOne(mappedBy="user")
+    private Historique historique;
 
     private String etat;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -58,7 +60,15 @@ public class User {
     }
 
     public void setSalary(int salary) {
-        this.salary = salary;
+         this.salary = salary;
+    }
+       
+    public Historique getHistorique() {
+        return historique;
+    }
+
+    public void setHistorique(Historique historique) {
+        this.historique = historique;
     }
 
     public List<holiday> getHolidays() {
