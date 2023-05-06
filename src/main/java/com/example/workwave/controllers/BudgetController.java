@@ -50,22 +50,27 @@ public class BudgetController {
     public List<Budget> show() {
         return budgetService.GetAllBudgets();
     }
-
+    @GetMapping(path = "/Budgets/status/{status}")
+    public List<Budget> getBudgetsByStatus(@PathVariable String status) {
+        StatusBudget statusBudget = StatusBudget.valueOf(status);
+        return budgetRepository.findByStatusBudget(statusBudget);
+    }
     @GetMapping("/Budget/{id}")
     public Budget getBudgetById(@PathVariable Long id) {
         return budgetService.getBudgetById(id);
     }
-    @GetMapping("/BudgetByBankAccount/{id}")
-    public Budget getBudgetByBankAccount(@PathVariable long id) {
+    @GetMapping("/BudgetByBankAccount/{id}/{status}")
+    public List<Budget> getBudgetByBankAccount(@PathVariable long id, @PathVariable String status) {
         BankAccount bankAccount = bankAccountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bank Account not found"));
 
-        Budget budget = budgetRepository.getBudgetByBankAccount(bankAccount);
-        if (budget == null) {
-            throw new RuntimeException("Budget not found for Bank Account");
+        List<Budget> budgets = budgetRepository.getBudgetByBankAccountAndStatusBudget(bankAccount, StatusBudget.valueOf(status));
+        if (budgets.isEmpty()) {
+            throw new RuntimeException("Budgets not found for Bank Account");
         }
-        return budget;
+        return budgets;
     }
+
     @GetMapping("/BudgetByProject/{id}")
     public Budget getBudgetByProject(@PathVariable long id) {
         Project project = projectRepository.findById(id)
@@ -94,14 +99,14 @@ public class BudgetController {
         Budget declinedBudget = budgetService.declineBudget(budgetId);
         return ResponseEntity.ok(declinedBudget);
     }
-    @Scheduled(fixedDelay = 120000) // run every 5 minutes
-    public void deleteDeclinedBudgets() {
-        List<Budget> declinedBudgets = budgetRepository.findByStatusBudget(StatusBudget.Declined);
-        for (Budget budget : declinedBudgets) {
-            Project project = budget.getProject();
-            project.setBudget(null);
-//            budgetRepository.delete(budget);
-        }
-    }
+   // @Scheduled(fixedDelay = 120000) // run every 5 minutes
+   // public void deleteDeclinedBudgets() {
+   //     List<Budget> declinedBudgets = budgetRepository.findByStatusBudget(StatusBudget.Declined);
+   //     for (Budget budget : declinedBudgets) {
+   //         Project project = budget.getProject();
+   //         project.setBudget(null);
+// //           budgetRepository.delete(budget);
+   //     }
+   // }
 }
 

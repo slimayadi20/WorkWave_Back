@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User,String> {
     public Optional<User> findByEmail(String email);
 
     Page<User> findByRole(Role role, Pageable pageable);
-
+    List<User> findByRole(Role role);
 
     public User findByToken(String token);
 

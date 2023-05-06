@@ -48,10 +48,10 @@ public class UserController {
     private OtpRepository otpRepository;
     @Autowired
     private JavaMailSender mailSender;
- @PostConstruct //lors de l'execution
- public void initRoleAndUser() {
-      userService.initRolesAndUser();
- }
+//@PostConstruct //lors de l'execution
+//public void initRoleAndUser() {
+//     userService.initRolesAndUser();
+//}
 
 
     @GetMapping(path = "/ImgUsers/{userName}")
@@ -333,5 +333,12 @@ public class UserController {
        List<User>usersactive =userService.GetUserByStatus("ACTIVE");
         return usersactive;
     }
+    @GetMapping(path = "/getUserByRoleFinancial")
+    public List <User> getUserByRole() throws Exception {
+        Role role = roleRepository.findRoleByRoleName("Financial Manager");
+        List<User> user =userRepository.findByRole(role);
+        return user;
+    }
+
 
 }

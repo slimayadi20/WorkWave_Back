@@ -1,15 +1,13 @@
 package com.example.workwave.services;
 
 import com.example.workwave.entities.*;
-import com.example.workwave.repositories.BankAccountRepository;
-import com.example.workwave.repositories.BudgetRepository;
-import com.example.workwave.repositories.ProjectRepository;
-import com.example.workwave.repositories.UserRepository;
+import com.example.workwave.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.ServletContext;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +25,8 @@ public class BudgetServiceImpl {
     private UserRepository userRepository;
     @Autowired
     BankAccountRepository bankAccountRepository;
+    @Autowired
+    TransactionRepository transactionRepository;
 
     public Budget requestBudget(Long pID,Double Amount,Long bID) {
         Project project = projectRepository.findById(pID)
@@ -60,7 +60,12 @@ public class BudgetServiceImpl {
 
         BankAccount bankAccount = budget.getBankAccount();
         bankAccount.setBalance(bankAccount.getBalance()- budget.getAmount());
-
+        Transactions transaction = new Transactions();
+        transaction.setAmount(-budget.getAmount());
+        transaction.setTransactionDate(LocalDate.now());
+        transaction.setDescription("Budget Payment");
+        transaction.setBankAccount(bankAccount);
+        transactionRepository.save(transaction);
 
 
         budget.setStatusBudget(StatusBudget.Approved);

@@ -21,46 +21,55 @@ public class BalanceService {
         List<Transactions> transactions = transactionsRepository.findByBankAccount_Id(accountId);
         List<BalanceChange> balanceChanges = new ArrayList<>();
 
-        LocalDate currentDate = LocalDate.now();
         Double currentBalance = null;
         if (!transactions.isEmpty()) {
-            currentBalance = transactions.get(transactions.size() - 1).getBankAccount().getBalance();
+            // Calculate the current balance by summing up all the transaction amounts up to the latest transaction date
+            Transactions latestTransaction = transactions.get(transactions.size() - 1);
+            Double balance = latestTransaction.getBankAccount().getBalance();
+            LocalDate latestTransactionDate = latestTransaction.getTransactionDate();
+            for (Transactions transaction : transactions) {
+                if (transaction.getTransactionDate().isAfter(latestTransactionDate)) {
+                    break;
+                }
+                if (transaction.getAmount() != null) {
+                    balance -= transaction.getAmount();
+                }
+            }
+            currentBalance = balance;
         }
 
         for (int i = 0; i < 30; i++) {
-            LocalDate date = currentDate.minusDays(i);
+            LocalDate date = LocalDate.now().minusDays(i);
             Double balance = null;
             Double percentageChange = null;
 
-            // Find the latest transaction with a non-null amount on or before the current date
-            Double previousBalance = currentBalance;
-            for (Transactions transaction : transactions) {
-                LocalDate transactionDate = transaction.getTransactionDate();
-                if (transactionDate.isBefore(date) || transactionDate.equals(date)) {
-                    if (transaction.getBankAccount() != null && transaction.getAmount() != null) {
-                        previousBalance = transaction.getBankAccount().getBalance() - transaction.getAmount();
+            // Calculate the balance by summing up all the transaction amounts up to the current date
+            if (!transactions.isEmpty()) {
+                Double tempBalance = transactions.get(0).getBankAccount().getBalance();
+                for (Transactions transaction : transactions) {
+                    if (transaction.getTransactionDate().isAfter(date)) {
                         break;
                     }
+                    if (transaction.getAmount() != null) {
+                        tempBalance -= transaction.getAmount();
+                    }
                 }
+                balance = tempBalance;
             }
 
             // If no transaction with a non-null amount is found, use the previous balance
             if (balanceChanges.size() > 0) {
                 balance = balanceChanges.get(balanceChanges.size() - 1).getBalance();
-            } else {
-                balance = previousBalance;
             }
 
             // Calculate percentage change
             if (currentBalance != null && balance.equals(currentBalance)) {
                 percentageChange = 0.0;
-            } else if (previousBalance != null && previousBalance.equals(currentBalance)) {
-                percentageChange = 0.0; // balance changed but resulting balance is same as previous balance
             } else if (currentBalance != null) {
                 percentageChange = (balance - currentBalance) / currentBalance * 100;
             }
 
-            balanceChanges.add(new BalanceChange(date, previousBalance, percentageChange));
+            balanceChanges.add(new BalanceChange(date, balance, percentageChange));
         }
 
         // Sort the balance changes by date in descending order
@@ -68,6 +77,9 @@ public class BalanceService {
 
         return balanceChanges;
     }
+
+
+
 
 
 

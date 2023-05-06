@@ -7,7 +7,7 @@ import java.util.List;
 public interface BudgetRepository extends JpaRepository<Budget,Long> {
 
     Budget getBudgetByProject(Project project);
-    Budget getBudgetByBankAccount(BankAccount bankAccount);
+    List <Budget> getBudgetByBankAccountAndStatusBudget(BankAccount bankAccount,StatusBudget statusBudget);
     List<Budget> findByStatusBudget(StatusBudget statusBudget);
 
 }

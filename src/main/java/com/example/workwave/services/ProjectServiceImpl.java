@@ -1,7 +1,9 @@
 package com.example.workwave.services;
 
+import com.example.workwave.entities.Budget;
 import com.example.workwave.entities.Project;
 import com.example.workwave.entities.ScrumBoard;
+import com.example.workwave.repositories.BudgetRepository;
 import com.example.workwave.repositories.ProjectRepository;
 import com.example.workwave.repositories.ProjectRepository;
 import com.example.workwave.repositories.ScrumBoardRepository;
@@ -23,6 +25,8 @@ public class ProjectServiceImpl {
 
     @Autowired
     ServletContext context;
+    @Autowired
+    BudgetRepository budgetRepository;
 
     public List<Project> GetAllProject() {
         return projectRepository.findAll();
@@ -40,7 +44,9 @@ public class ProjectServiceImpl {
     public String deleteProject(Long idProject) {
         Project p = projectRepository.findById(idProject).get();
        scrumrepository.delete( scrumrepository.findByProject(p) );
+        budgetRepository.delete(budgetRepository.getBudgetByProject(p));
         projectRepository.deleteById(idProject);
+
         return "project removed !! " + idProject;
     }
 
