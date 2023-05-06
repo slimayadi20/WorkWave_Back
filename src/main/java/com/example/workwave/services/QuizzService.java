@@ -1,8 +1,8 @@
 package com.example.workwave.services;
 
-import com.example.workwave.entities.Cours;
+import com.example.workwave.entities.Formation;
 import com.example.workwave.entities.Quizz;
-import com.example.workwave.repositories.CoursRepository;
+import com.example.workwave.repositories.FormationRepository;
 import com.example.workwave.repositories.QuizzRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,11 +16,17 @@ import java.util.Optional;
 public class QuizzService {
 
     @Autowired
-    static
     QuizzRepository quizzRepo;
+    @Autowired
+    FormationRepository formationRepository;
 
-    public static List<Quizz> ShowQuizz() {
+    public List<Quizz> ShowQuizz() {
         return quizzRepo.findAll();
+    }
+
+    public Quizz quizbyformation(Long id) {
+        Formation f = formationRepository.findById(id).get();
+        return quizzRepo.findByFormation(f);
     }
 
     public ResponseEntity<String> addQuizz(Quizz q) {

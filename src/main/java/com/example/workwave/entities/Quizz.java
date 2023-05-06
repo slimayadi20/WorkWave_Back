@@ -1,5 +1,7 @@
 package com.example.workwave.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,7 +12,7 @@ public class Quizz {
     @Column(name = "idQuizz")
     private Long idQuizz;
 
-    private String Question;
+    private String Question1;
     private String Question2;
     private String Question3;
     private String Question4;
@@ -31,6 +33,7 @@ public class Quizz {
     private String rep3Q4;
     private String repCorrectQ4;
     @OneToOne(mappedBy = "quizz")
+    @JsonIgnore
     private Formation formation;
 
     public Quizz() {
@@ -44,12 +47,12 @@ public class Quizz {
         this.idQuizz = idQuizz;
     }
 
-    public String getQuestion() {
-        return Question;
+    public String getQuestion1() {
+        return Question1;
     }
 
-    public void setQuestion(String question) {
-        Question = question;
+    public void setQuestion1(String question1) {
+        Question1 = question1;
     }
 
     public String getQuestion2() {

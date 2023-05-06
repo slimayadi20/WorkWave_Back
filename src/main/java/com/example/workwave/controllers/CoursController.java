@@ -21,11 +21,14 @@ public class CoursController {
 
     @PostMapping("/addCours")
     public ResponseEntity<String> addCours(@RequestBody Cours payload) {
+        System.out.println("payload.getContenu1()");
+        System.out.println(payload.getContenu1());
         return coursService.addCours(payload);
     }
 
     @DeleteMapping("/deleteCours/{id}")
     public ResponseEntity<String> deleteCours(@PathVariable long id) {
+        System.out.println(id);
         return coursService.deleteCours(id);
     }
 
@@ -43,7 +46,8 @@ public class CoursController {
     public Optional<Cours> getCours(@PathVariable Long idCours) {
         return coursService.getForm(idCours);
     }
-   @GetMapping("/CoursFormation/{idformation}")
+
+    @GetMapping("/CoursFormation/{idformation}")
     public Optional<Cours> CoursFormation(@PathVariable Long idformation) {
         return coursService.getCours(idformation);
     }

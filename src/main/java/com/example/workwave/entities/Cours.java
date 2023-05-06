@@ -1,47 +1,39 @@
 package com.example.workwave.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
 @Entity
 public class Cours {
 
+    @ManyToOne
+    @JsonBackReference
+    Formation formation;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idCours")
     private Long idCours;
-    @Column(length = 500)
     private String titre;
-
     private String image1;
-    @Column(length = 500)
 
     private String SousTitre1;
-    @Column(length = 500)
 
     private String Contenu1;
-    @Column(length = 500)
 
     private String SousTitre2;
-    @Column(length = 500)
 
     private String Contenu2;
-    @Column(length = 500)
+
     private String SousTitre3;
-    @Column(length = 500)
 
     private String Contenu3;
-    @Column(length = 500)
     private String SousTitre4;
-    @Column(length = 500)
 
     private String Contenu4;
 
-    @ManyToOne
-    @JsonBackReference
-    Formation formation;
+    public Cours() {
+    }
 
     public Long getIdCours() {
         return idCours;
@@ -137,10 +129,6 @@ public class Cours {
 
     public void setImage1(String image1) {
         this.image1 = image1;
-    }
-
-
-    public Cours() {
     }
 
 }
