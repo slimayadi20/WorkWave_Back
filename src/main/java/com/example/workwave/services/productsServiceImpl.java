@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.servlet.ServletContext;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -69,6 +70,8 @@ public class productsServiceImpl {
         return Files.readAllBytes(Paths.get(filePath));
 
     }
+
+
 
 
 

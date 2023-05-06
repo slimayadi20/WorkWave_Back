@@ -51,7 +51,7 @@ public class CategorieController {
         return CategService.getcateg(id);
     }
 
-    @GetMapping("/list")//affichage+pagination
+    @GetMapping("/category/list")//fichage+pagination
     public Page<Categorie> showPage(@RequestParam(defaultValue = "0") int page) {
         PageRequest pageRequest = PageRequest.of(page, 2);
         System.out.println(CategRepository.findAll(pageRequest));
