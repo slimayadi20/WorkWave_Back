@@ -1,14 +1,16 @@
 package com.example.workwave.services;
 
 import com.example.workwave.entities.Categorie;
-import com.example.workwave.entities.holiday;
 import com.example.workwave.repositories.CategorieRepository;
-import com.example.workwave.repositories.HolidayRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletContext;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class CategorieService {
     @Autowired
@@ -20,11 +22,13 @@ public class CategorieService {
 
     public List<Categorie> GetAllCateg() {
         return CategRepository.findAll();
+    }  public Optional<Categorie> getcateg(Long id ) {
+        return CategRepository.findById(id);
     }
 
-    public String addCateg(Categorie c)  {
+    public ResponseEntity addCateg(Categorie c)  {
         CategRepository.save(c);
-        return "ok" ;
+        return new ResponseEntity<>("{\"message\": \"Category added successfully.\"}", HttpStatus.OK);
     }
 
     public String deleteCateg(Long idCateg) {

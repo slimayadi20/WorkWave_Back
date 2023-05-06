@@ -28,7 +28,8 @@ public class User {
     private int phoneNumber;
     @Column(name = "token")
     private String token;
-
+    @OneToOne(mappedBy="user")
+    private Historique historique;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -41,6 +42,13 @@ public class User {
 
     }
 
+    public Historique getHistorique() {
+        return historique;
+    }
+
+    public void setHistorique(Historique historique) {
+        this.historique = historique;
+    }
 
     public List<holiday> getHolidays() {
         return holidays;

@@ -1,14 +1,17 @@
 package com.example.workwave.controllers;
+
 import com.example.workwave.entities.Categorie;
 import com.example.workwave.entities.Formation;
+import com.example.workwave.repositories.CategorieRepository;
 import com.example.workwave.repositories.FormationRepository;
-import com.example.workwave.services.CategorieService;
 import com.example.workwave.services.FormationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class FormationController {
@@ -17,13 +20,16 @@ public class FormationController {
 
     @Autowired
     FormationRepository FormRepository;
+    @Autowired
+    CategorieRepository CategRepository;
 
     @PostMapping("/addForm")
-    public String addForm(@RequestBody Formation payload) {
+    public ResponseEntity<String> addForm(@RequestBody Formation payload) {
         return FormService.addForm(payload);
     }
+
     @DeleteMapping("/deleteForm/{id}")
-    public String deleteCateg(@PathVariable long id) {
+    public ResponseEntity<String> deleteCateg(@PathVariable long id) {
         return FormService.deleteForm(id);
     }
 
@@ -37,6 +43,9 @@ public class FormationController {
         return FormService.ShowForm();
     }
 
-
+    @GetMapping("/showForm/{idFormation}")
+    public Optional<Formation> getFormation(@PathVariable Long idFormation) {
+        return FormService.getForm(idFormation);
+    }
 
 }
