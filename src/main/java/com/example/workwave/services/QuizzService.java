@@ -26,13 +26,19 @@ public class QuizzService {
 
     public Quizz quizbyformation(Long id) {
         Formation f = formationRepository.findById(id).get();
+        System.out.println(id);
+        System.out.println(f.getIdFormation());
+        System.out.println(quizzRepo.findByFormation(f));
         return quizzRepo.findByFormation(f);
     }
 
     public ResponseEntity<String> addQuizz(Quizz q) {
         try {
             quizzRepo.save(q);
-            return new ResponseEntity<>("{\"message\": \"Formation saved successfully.\"}", HttpStatus.OK);
+            Formation f = q.getFormation();
+            f.setQuizz(q);
+            formationRepository.save(f);
+            return new ResponseEntity<>("{\"message\": \"Quizz saved successfully.\"}", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("{\"message\": \"Error saving formation: " + e.getMessage() + "\"}", HttpStatus.INTERNAL_SERVER_ERROR);
         }

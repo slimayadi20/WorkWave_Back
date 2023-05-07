@@ -1,9 +1,8 @@
 package com.example.workwave.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 
@@ -21,8 +20,17 @@ public class Historique {
     private int score;
     private int avancement;
     private String etat;
+    private Date completionDate;
 
     public Historique() {
+    }
+
+    public Date getCompletionDate() {
+        return completionDate;
+    }
+
+    public void setCompletionDate(Date completionDate) {
+        this.completionDate = completionDate;
     }
 
     public Long getIdHistorique() {

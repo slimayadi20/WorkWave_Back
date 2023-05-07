@@ -3,9 +3,11 @@ package com.example.workwave.controllers;
 import com.example.workwave.entities.Cours;
 import com.example.workwave.repositories.CoursRepository;
 import com.example.workwave.services.CoursService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,10 +22,9 @@ public class CoursController {
 
 
     @PostMapping("/addCours")
-    public ResponseEntity<String> addCours(@RequestBody Cours payload) {
-        System.out.println("payload.getContenu1()");
-        System.out.println(payload.getContenu1());
-        return coursService.addCours(payload);
+    public ResponseEntity<String> addCours(@RequestParam("cours") String cours, @RequestParam("file") MultipartFile file) throws JsonProcessingException {
+        System.out.println(cours);
+        return coursService.addCours(cours, file);
     }
 
     @DeleteMapping("/deleteCours/{id}")
@@ -33,8 +34,8 @@ public class CoursController {
     }
 
     @PutMapping("/updateCours")
-    public Cours updateCours(@RequestBody Cours c) {
-        return coursService.updateCours(c);
+    public Cours updateCours(@RequestParam("cours") String cours, @RequestParam("file") MultipartFile file) throws JsonProcessingException {
+        return coursService.updateCours(cours, file);
     }
 
     @GetMapping("/ShowCours")//affichage+pagination

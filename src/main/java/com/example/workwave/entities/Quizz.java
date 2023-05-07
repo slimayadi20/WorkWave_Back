@@ -33,7 +33,7 @@ public class Quizz {
     private String rep3Q4;
     private String repCorrectQ4;
     @OneToOne(mappedBy = "quizz")
-    @JsonIgnore
+
     private Formation formation;
 
     public Quizz() {

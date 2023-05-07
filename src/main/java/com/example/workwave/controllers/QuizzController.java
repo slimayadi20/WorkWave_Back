@@ -43,5 +43,10 @@ public class QuizzController {
         return quizzService.quizbyformation(id);
     }
 
+  @GetMapping("/quizbyid/{id}")//affichage+pagination
+    public Quizz quizbyid(@PathVariable Long id) {
+        return quizzRepo.findById(id).get();
+    }
+
 
 }

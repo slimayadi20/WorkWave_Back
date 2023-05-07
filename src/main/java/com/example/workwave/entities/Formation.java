@@ -35,6 +35,8 @@ public class Formation {
     private Set<Cours> cours;
 
     @OneToOne
+    @JoinColumn(name = "quizz_id")
+    @JsonIgnore
     private Quizz quizz;
 
 
