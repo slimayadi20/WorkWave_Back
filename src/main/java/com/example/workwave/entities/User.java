@@ -29,13 +29,17 @@ public class User {
     private String token;
     private boolean ban;
     private boolean tfa;
-
+    @OneToOne(mappedBy="user")
+    private Historique historique;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<holiday> holidays = new ArrayList<>();
-    @ManyToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Project> projet;
+
+    @ManyToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Task> tasks;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "USER_ROLE",
             joinColumns = {@JoinColumn(name = "USER_ID")},
@@ -62,6 +66,22 @@ public class User {
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.role = role;
+    }
+
+    public Historique getHistorique() {
+        return historique;
+    }
+
+    public Set<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public void setHistorique(Historique historique) {
+        this.historique = historique;
     }
 
     public List<holiday> getHolidays() {

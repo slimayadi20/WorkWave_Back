@@ -52,6 +52,10 @@ public class UserServiceImpl {
         etudiantRole.setRoleName("Project manager");
         etudiantRole.setRoleDescription("Project manager role");
         roleRepository.save(etudiantRole);
+        Role employee = new Role();
+        employee.setRoleName("Employee");
+        employee.setRoleDescription("employee role");
+        roleRepository.save(employee);
 
         //Ajout de l'admin dans la base
         User adminUser = new User();
@@ -77,7 +81,7 @@ public class UserServiceImpl {
 
     public ResponseEntity<Map<String, String>> registerNewUser(User user) throws JsonProcessingException {
         try {
-            Role role = roleRepository.findById("Admin").get();
+            Role role = roleRepository.findById("Employee").get();
             String token = RandomString.make(30);
             user.setToken(token);
             Set<Role> userRoles = new HashSet<>();

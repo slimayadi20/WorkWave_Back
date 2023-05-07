@@ -69,7 +69,7 @@ public class UserController {
     }
 
     @GetMapping("/list")//affichage+pagination
-    public Page<User> showPage(@RequestParam(defaultValue = "0") int page, @RequestParam(required = false) String role) {
+    public Page<User> showPages(@RequestParam(defaultValue = "0") int page, @RequestParam(required = false) String role) {
         PageRequest pageRequest = PageRequest.of(page, 2);
         if (role != null && !role.isEmpty()) {
             Role role1 = roleRepository.findRoleByRoleName(role);
@@ -86,7 +86,6 @@ public class UserController {
             return userRepository.findByRole(role1);
         }
         return null;
-
     }
 
     @PostMapping({"/registerNewUser"})

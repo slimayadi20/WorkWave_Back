@@ -18,7 +18,7 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    private String project_name ;
+    private String projectname ;
     private String description ;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -42,13 +42,7 @@ public class Project {
         this.id = id;
     }
 
-    public String getProject_name() {
-        return project_name;
-    }
 
-    public void setProject_name(String project_name) {
-        this.project_name = project_name;
-    }
 
     public String getDescription() {
         return description;
@@ -93,12 +87,20 @@ public class Project {
     public Project() {
     }
 
-    public Project(Long id, String project_name, String description,  Date dateEmission, Date dateExpiration, String etat) {
+    public Project(Long id, String projectname, String description, Date dateEmission, Date dateExpiration, String etat) {
         this.id = id;
-        this.project_name = project_name;
+        this.projectname = projectname;
         this.description = description;
         this.dateEmission = dateEmission;
         this.dateExpiration = dateExpiration;
         this.etat = etat;
+    }
+
+    public String getProjectname() {
+        return projectname;
+    }
+
+    public void setProjectname(String projectname) {
+        this.projectname = projectname;
     }
 }
