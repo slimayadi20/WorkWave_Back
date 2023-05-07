@@ -65,7 +65,7 @@ public class TransactionController {
         BankAccount bankAccount = bankAccountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Bank Account not found"));
 
-        List<Transactions> transactions = transactionRepository.findByBankAccount_Id(bankAccount.getId());
+        List<Transactions> transactions = transactionRepository.findByBankAccount(bankAccount);
         if (transactions == null) {
             throw new RuntimeException("Transaction not found for Bank Account");
         }

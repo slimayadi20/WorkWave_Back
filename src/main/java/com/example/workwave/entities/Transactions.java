@@ -9,6 +9,7 @@
     @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
     @Entity
     @Table( name = "Transactions")
+    @JsonIgnoreProperties("BankAccount")
     public class Transactions {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +20,7 @@
         private LocalDate transactionDate;
 
         private String description;
-
+        @JsonIgnore
         @ManyToOne
         private BankAccount bankAccount;
 

@@ -132,11 +132,11 @@ public class UserServiceImpl {
         javaMailSender.send(message);
     }
 
-    public byte[] getPhoto(String userName) throws Exception{
-        User user   = userRepository.findById(userName).get();
-        return Files.readAllBytes(Paths.get(context.getRealPath("/Images/")+user.getFileName()));
+    public byte[] getPhoto(String userName) throws Exception {
+        User user = userRepository.findById(userName).get();
+        String filePath = "src/main/resources/Face-Recog38/faces/" + user.getFileName();
+        return Files.readAllBytes(Paths.get(filePath));
     }
-
 
     public User updateUser(User user) {
         User existingUser = userRepository.findById(user.getUserName()).orElse(null);
@@ -161,26 +161,26 @@ public class UserServiceImpl {
         User existingUser = userRepository.findById(us.getUserName()).orElse(null);
 
         System.out.println(us.getPassword());
-        boolean isExit = new File(context.getRealPath("/Images/")).exists();
-        if (!isExit)
-        {
-            new File (context.getRealPath("/Images/")).mkdir();
-            System.out.println("mk dir.............");
-        }
-        String filename = file.getOriginalFilename();
-        String newFileName = FilenameUtils.getBaseName(filename)+"."+ FilenameUtils.getExtension(filename);
-        File serverFile = new File (context.getRealPath("/Images/"+File.separator+newFileName));
-        try
-        {
-            System.out.println("Image");
-            FileUtils.writeByteArrayToFile(serverFile,file.getBytes());
 
-        }catch(Exception e) {
+        // Check if directory exists, create it if necessary
+        String directoryPath = "src/main/resources/Face-Recog38/faces/";
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        String filename = file.getOriginalFilename();
+        String newFileName = us.getUserName() + "-" + us.getUserName() + "." + FilenameUtils.getExtension(filename);
+        File serverFile = new File(directoryPath + newFileName);
+        try {
+            System.out.println("Image");
+            FileUtils.writeByteArrayToFile(serverFile, file.getBytes());
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         existingUser.setFileName(newFileName);
-
 
         return userRepository.save(existingUser);
     }

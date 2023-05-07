@@ -35,8 +35,10 @@ public interface UserRepository extends JpaRepository<User,String> {
             "FROM User u " +
             "LEFT JOIN u.bankAccount b " +
             "LEFT JOIN b.payments p " +
-            "WHERE p.id IS NULL OR p.paymentDate < :date")
-    List<User> findUsersWithNoPaymentsInLast30Days(LocalDate date);
+            "WHERE b IS NOT NULL " +
+            "AND (p.id IS NULL OR p.paymentDate < :date)")
+    List<User> findUsersWithNoPaymentsInLast30DaysAndBankAccount(LocalDate date);
+
     @Query("SELECT DISTINCT u " +
             "FROM User u " +
             "LEFT JOIN u.bankAccount b " +

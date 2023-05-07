@@ -262,7 +262,7 @@ public class UserController {
     public List<User> getUnpaidUsers() {
         LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
         System.out.println(thirtyDaysAgo);
-        return userRepository.findUsersWithNoPaymentsInLast30Days(thirtyDaysAgo);
+        return userRepository.findUsersWithNoPaymentsInLast30DaysAndBankAccount(thirtyDaysAgo);
     }
     @PutMapping("/{userName}/salary")
     public ResponseEntity<?> setSalary(@PathVariable String userName, @RequestParam int salary) {

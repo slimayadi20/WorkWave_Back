@@ -10,7 +10,7 @@ import java.util.Set;
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Entity
 @Table( name = "BankAccount")
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler","Invoices"})
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler","Invoices","Transactions"})
 public class BankAccount  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -1,6 +1,8 @@
 package com.example.workwave.services;
 
+import com.example.workwave.entities.BankAccount;
 import com.example.workwave.entities.Transactions;
+import com.example.workwave.repositories.BankAccountRepository;
 import com.example.workwave.repositories.TransactionRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,29 +18,19 @@ public class BalanceService {
 
     @Autowired
     TransactionRepository transactionsRepository;
-
+    @Autowired
+    BankAccountRepository bankAccountRepository;
     public List<BalanceChange> getBalanceChange(Long accountId) {
-        List<Transactions> transactions = transactionsRepository.findByBankAccount_Id(accountId);
+        BankAccount bankAccount = bankAccountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Bank Account not found"));
+
+        List<Transactions> transactions = transactionsRepository.findByBankAccount(bankAccount);
         List<BalanceChange> balanceChanges = new ArrayList<>();
 
-        Double currentBalance = null;
-        if (!transactions.isEmpty()) {
-            // Calculate the current balance by summing up all the transaction amounts up to the latest transaction date
-            Transactions latestTransaction = transactions.get(transactions.size() - 1);
-            Double balance = latestTransaction.getBankAccount().getBalance();
-            LocalDate latestTransactionDate = latestTransaction.getTransactionDate();
-            for (Transactions transaction : transactions) {
-                if (transaction.getTransactionDate().isAfter(latestTransactionDate)) {
-                    break;
-                }
-                if (transaction.getAmount() != null) {
-                    balance -= transaction.getAmount();
-                }
-            }
-            currentBalance = balance;
-        }
+        Double currentBalance = bankAccount.getBalance();
+        balanceChanges.add(new BalanceChange(LocalDate.now(), currentBalance, 0.0));
 
-        for (int i = 0; i < 30; i++) {
+        for (int i = 1; i < 30; i++) {
             LocalDate date = LocalDate.now().minusDays(i);
             Double balance = null;
             Double percentageChange = null;
@@ -58,14 +50,14 @@ public class BalanceService {
             }
 
             // If no transaction with a non-null amount is found, use the previous balance
-            if (balanceChanges.size() > 0) {
+            if (balance == null) {
                 balance = balanceChanges.get(balanceChanges.size() - 1).getBalance();
             }
 
             // Calculate percentage change
-            if (currentBalance != null && balance.equals(currentBalance)) {
+            if (currentBalance.equals(balance)) {
                 percentageChange = 0.0;
-            } else if (currentBalance != null) {
+            } else {
                 percentageChange = (balance - currentBalance) / currentBalance * 100;
             }
 
@@ -77,9 +69,6 @@ public class BalanceService {
 
         return balanceChanges;
     }
-
-
-
 
 
 
