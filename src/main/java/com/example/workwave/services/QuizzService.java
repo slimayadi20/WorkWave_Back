@@ -25,11 +25,13 @@ public class QuizzService {
     }
 
     public Quizz quizbyformation(Long id) {
+
         Formation f = formationRepository.findById(id).get();
         System.out.println(id);
         System.out.println(f.getIdFormation());
         System.out.println(quizzRepo.findByFormation(f));
         return quizzRepo.findByFormation(f);
+        
     }
 
     public ResponseEntity<String> addQuizz(Quizz q) {
