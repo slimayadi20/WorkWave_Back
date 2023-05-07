@@ -214,7 +214,11 @@ public class UserServiceImpl {
     }
     public List<User> GetUserByStatus(String etat){return userRepository.findByEtat(etat);}
 
-
+    public void setSalary(String userName, int salary) {
+        User user = userRepository.findById(userName).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setSalary(salary);
+        userRepository.save(user);
+    }
 
     public void updatePassword(User user, String newPassword) {
 
@@ -222,10 +226,11 @@ public class UserServiceImpl {
 
         userRepository.save(user);
     }
-    public void setSalary(String userName, int salary) {
-        User user = userRepository.findById(userName).orElseThrow(() -> new RuntimeException("User not found"));
-        user.setSalary(salary);
-        userRepository.save(user);
-    }
+    public User updatetfa(User user) {
+        User existingUser = userRepository.findById(user.getUserName()).orElse(null);
+        existingUser.setTfa(user.isTfa());
 
+
+        return userRepository.save(existingUser);
+    }
 }

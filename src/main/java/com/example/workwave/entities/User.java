@@ -49,7 +49,15 @@ public class User {
     @ManyToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Task> tasks;
 
+    private boolean tfa;
 
+    public boolean isTfa() {
+        return tfa;
+    }
+
+    public void setTfa(boolean tfa) {
+        this.tfa = tfa;
+    }
 
     public User() {
 
