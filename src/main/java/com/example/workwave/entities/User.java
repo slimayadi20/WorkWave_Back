@@ -1,9 +1,7 @@
 package com.example.workwave.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userName")
-
+@JsonIgnoreProperties({"hibernateLazyInitializer","Invoices","Transactions","tasks"})
 @Entity
 public class User {
     @Id
@@ -205,5 +203,6 @@ public class User {
     public void setTfa(boolean tfa) {
         this.tfa = tfa;
     }
+
 
 }

@@ -1,7 +1,7 @@
 package com.example.workwave.services;
 
-import com.example.workwave.entities.Categorie;
 import com.example.workwave.entities.Formation;
+import com.example.workwave.repositories.CategorieRepository;
 import com.example.workwave.repositories.FormationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +16,8 @@ import java.util.Optional;
 public class FormationService {
     @Autowired
     FormationRepository FormRepository;
-
+    @Autowired
+    CategorieRepository categorieRepository;
 
     @Autowired
     ServletContext context;
@@ -42,12 +43,17 @@ public class FormationService {
 
 
     //the update method
-    public Formation  updateForm(Formation f) {
+    public Formation updateForm(Formation f) {
 
         return FormRepository.save(f);
     }
-    public Optional<Formation> getForm(Long id){
+
+    public Optional<Formation> getForm(Long id) {
         return FormRepository.findById(id);
+    }
+
+    public List<Formation> showFormByCateg(Long c) {
+        return FormRepository.findByCateg(categorieRepository.findById(c).get());
     }
 
 

@@ -26,7 +26,7 @@ public class Formation {
 
     @JoinColumn(name = "idCateg")
     @JsonIgnore
-    private Categorie Categ;
+    private Categorie categ;
     @OneToOne(mappedBy = "formation")
     @JsonIgnore
     private Historique historique;
@@ -105,11 +105,11 @@ public class Formation {
     }
 
     public Categorie getCateg() {
-        return Categ;
+        return categ;
     }
 
     public void setCateg(Categorie categ) {
-        Categ = categ;
+        this.categ = categ;
     }
 
     public String getImageInstructeur() {
@@ -128,7 +128,6 @@ public class Formation {
         this.description = description;
         this.imageInstructeur = imageInstructeur;
 
-        Categ = categ;
     }
 
     public Formation() {

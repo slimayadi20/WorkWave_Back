@@ -6,7 +6,6 @@ import com.example.workwave.repositories.CategorieRepository;
 import com.example.workwave.repositories.FormationRepository;
 import com.example.workwave.services.FormationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +45,11 @@ public class FormationController {
     @GetMapping("/showForm/{idFormation}")
     public Optional<Formation> getFormation(@PathVariable Long idFormation) {
         return FormService.getForm(idFormation);
+    }
+
+    @GetMapping("/showFormByCateg/{id}")
+    public List<Formation> showFormByCateg(@PathVariable Long id) {
+        return FormService.showFormByCateg(id);
     }
 
 }
