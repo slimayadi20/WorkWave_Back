@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -188,7 +187,7 @@ public class UserController {
 
     }
 
-   // @Scheduled(fixedDelay = 120000) // run every 2 minutes
+    // @Scheduled(fixedDelay = 120000) // run every 2 minutes
     public void deleteExpiredOtps() {
         List<otp> expiredOtps = otpRepository.findByCreatedAtBefore(LocalDateTime.now().minusMinutes(2));
         otpRepository.deleteAll(expiredOtps);
@@ -250,5 +249,10 @@ public class UserController {
         }
     }
 
+    @GetMapping(path = "/getUser")
+    public List<User> getUserByUsername() throws Exception {
+        List<User> usersactive = userService.GetUserByStatus("ACTIVE");
+        return usersactive;
+    }
 
 }

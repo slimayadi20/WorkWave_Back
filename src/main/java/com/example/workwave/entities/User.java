@@ -29,6 +29,8 @@ public class User {
     private String token;
     private boolean ban;
     private boolean tfa;
+    private String etat;
+
     @OneToOne(mappedBy="user")
     private Historique historique;
 
@@ -66,6 +68,14 @@ public class User {
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.role = role;
+    }
+
+    public String getEtat() {
+        return etat;
+    }
+
+    public void setEtat(String etat) {
+        this.etat = etat;
     }
 
     public Historique getHistorique() {

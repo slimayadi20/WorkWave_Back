@@ -220,5 +220,6 @@ public class UserServiceImpl {
 
         userRepository.save(user);
     }
+    public List<User> GetUserByStatus(String etat){return userRepository.findByEtat(etat);}
 
 }

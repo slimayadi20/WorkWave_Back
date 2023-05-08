@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -29,15 +27,12 @@ public class OrderController {
 
     @Autowired
     OrderServiceImpl Orderservice;
-
-    @Autowired
-    private JavaMailSender mailSender;
     @Autowired
     SupplierRepository supplierRepository;
     @Autowired
     productsRepository productsRepository;
-
-
+    @Autowired
+    private JavaMailSender mailSender;
 
     @PostMapping("/addOrder")
     public String addOrder(@RequestBody Order order) {
@@ -48,14 +43,47 @@ public class OrderController {
             System.out.println("p_id");
             System.out.println(p_id);
             // do something with p_id
-            Orderservice.addOrder(order);
-            Orderservice.addOrderToProduct(order.getO_id(), p_id);
+            try {
+                Set<Supplier> suppliers = order.getSupplier();
+                if (suppliers != null && !suppliers.isEmpty()) {
+                    Supplier supplier = suppliers.iterator().next();
+                    String supplierEmail = supplier.getEmail();
+                    sendMail(supplierEmail, product.getName(), order.getQuantity());
+                    Orderservice.addOrder(order);
+                    Orderservice.addOrderToProduct(order.getO_id(), p_id);
+                    // do something with supplierEmail
+                }
 
+            } catch (MessagingException | UnsupportedEncodingException e) {
+                return ("Failed to send email");
+            }
         }
-
-
         return "ok";
+    }
 
+    public void sendMail(String recipientEmail, String p_name, int qte) throws MessagingException, UnsupportedEncodingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setFrom("slim.ayadi@esprit.tn", "workwave Support");
+        helper.setTo(recipientEmail);
+
+        String subject = "WorkWave Want to order From you";
+
+        String content = "<p>Hello,</p>" +
+                "<p>We would like to place an order with your company. " +
+                "Please see the details of our order below:</p>" +
+                "<ul>" +
+                "<li>" + p_name + ":" + qte + " units</li>" +
+                "</ul>" +
+                "<p>Please confirm that you can fulfill this order and let us know the expected delivery date.</p>" +
+                "<p>Thank you,</p>";
+
+        helper.setSubject(subject);
+
+        helper.setText(content, true);
+
+        mailSender.send(message);
     }
 
     @DeleteMapping("/deleteOrder/{o_id}")
