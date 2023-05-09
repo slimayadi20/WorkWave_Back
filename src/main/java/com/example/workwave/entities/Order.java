@@ -19,7 +19,8 @@ public class Order {
 
     private int quantity;
 
-
+    @OneToOne
+    private Invoices invoices;
 
     @Temporal(TemporalType.DATE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -30,6 +31,15 @@ public class Order {
     @OneToMany(mappedBy="order")
     @JsonManagedReference
     private Set<products> product;
+
+
+    public Invoices getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(Invoices invoices) {
+        this.invoices = invoices;
+    }
 
     public long getO_id() {
         return o_id;

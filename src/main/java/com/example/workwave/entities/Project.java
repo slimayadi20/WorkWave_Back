@@ -33,6 +33,18 @@ public class Project {
             joinColumns = { @JoinColumn(name = "projet_id", referencedColumnName = "id")},
             inverseJoinColumns = { @JoinColumn(name = "user_user_name", referencedColumnName = "userName") })
     private Set<User> user;
+    @OneToOne
+    private Budget budget;
+
+
+
+    public Budget getBudget() {
+        return budget;
+    }
+
+    public void setBudget(Budget budget) {
+        this.budget = budget;
+    }
 
     public Long getId() {
         return id;

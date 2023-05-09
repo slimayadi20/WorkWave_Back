@@ -23,6 +23,7 @@ import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -249,10 +250,38 @@ public class UserController {
         }
     }
 
+    @GetMapping("/UserByBankAccount/{id}")
+    public User getUsersBy(@PathVariable Long id) {
+        return userRepository.findByBankAccount_Id(id);
+    }
+
+
+    @GetMapping("/unpaid")
+    public List<User> getUnpaidUsers() {
+        LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+        System.out.println(thirtyDaysAgo);
+        return userRepository.findUsersWithNoPaymentsInLast30DaysAndBankAccount(thirtyDaysAgo);
+    }
+    @PutMapping("/{userName}/salary")
+    public ResponseEntity<?> setSalary(@PathVariable String userName, @RequestParam int salary) {
+        userService.setSalary(userName, salary);
+        return ResponseEntity.ok().build();
+    }
+    @GetMapping("/usersPaid")
+    public List<User> getUsersWithPaymentsForBankAccount(@RequestParam Long bankAccountId) {
+        LocalDate date = LocalDate.now().minusDays(29);
+        return userRepository.findUsersWithPaymentsInLast29DaysForBankAccount(date, bankAccountId);
+    }
     @GetMapping(path = "/getUser")
-    public List<User> getUserByUsername() throws Exception {
-        List<User> usersactive = userService.GetUserByStatus("ACTIVE");
+    public List <User> getUserByUsername() throws Exception {
+        List<User>usersactive =userService.GetUserByStatus("ACTIVE");
         return usersactive;
+    }
+    @GetMapping(path = "/getUserByRoleFinancial")
+    public List <User> getUserByRole() throws Exception {
+        Role role = roleRepository.findRoleByRoleName("Financial Manager");
+        List<User> user =userRepository.findByRole(role);
+        return user;
     }
 
 }

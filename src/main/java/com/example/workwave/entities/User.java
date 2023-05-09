@@ -46,10 +46,31 @@ public class User {
             inverseJoinColumns = {
                     @JoinColumn(name = "ROLE_ID")})
     private Set<Role> role;
-
+    private int salary;
     public User() {
 
     }
+    @OneToOne
+    private BankAccount bankAccount;
+
+
+    public BankAccount getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
+    }
+
+    public int getSalary() {
+        return salary;
+    }
+
+    public void setSalary(int salary) {
+        this.salary = salary;
+    }
+
+
 
 
     public <E> User(String userName, String password, ArrayList<E> es) {

@@ -220,6 +220,14 @@ public class UserServiceImpl {
 
         userRepository.save(user);
     }
-    public List<User> GetUserByStatus(String etat){return userRepository.findByEtat(etat);}
 
+    public List<User> GetUserByStatus(String etat) {
+        return userRepository.findByEtat(etat);
+    }
+
+    public void setSalary(String userName, int salary) {
+        User user = userRepository.findById(userName).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setSalary(salary);
+        userRepository.save(user);
+    }
 }
