@@ -31,6 +31,7 @@ public class BudgetController {
     @Autowired
     BudgetServiceImpl budgetService;
 
+
     @PostMapping("/addBudget")
     public String addBudget(@RequestBody Budget budget) {
         return budgetService.addBudget(budget);
@@ -108,5 +109,36 @@ public class BudgetController {
 // //           budgetRepository.delete(budget);
    //     }
    // }
+
+    //*****************************************
+    @GetMapping("/{bankAccountId}/highestBudget")
+    public ResponseEntity<Map<String, Object>> getHighestBudgetForBankAccount(@PathVariable Long bankAccountId) {
+        Map<String, Object> result = budgetService.getHighestBudgetForBankAccount(bankAccountId);
+        if (result == null) {
+            // BankAccount not found or no budgets associated with the account
+            return ResponseEntity.notFound().build();
+        } else {
+            // Return the highest budget as a JSON object
+            return ResponseEntity.ok(result);
+        }
+    }
+
+    @GetMapping("/{bankAccountId}/lowestBudget")
+    public ResponseEntity<Map<String, Object>> getLowestBudgetForBankAccount(@PathVariable Long bankAccountId) {
+        Map<String, Object> result = budgetService.getLowestBudgetForBankAccount(bankAccountId);
+        if (result == null) {
+            // BankAccount not found or no budgets associated with the account
+            return ResponseEntity.notFound().build();
+        } else {
+            // Return the lowest budget as a JSON object
+            return ResponseEntity.ok(result);
+        }
+    }
+    @GetMapping("/Budget/count")
+    public Long countBudgets() {
+        return budgetRepository.countBudgets();
+    }
+
+
 }
 

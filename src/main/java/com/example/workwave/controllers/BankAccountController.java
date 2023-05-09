@@ -6,14 +6,16 @@ import com.example.workwave.repositories.*;
 import com.example.workwave.services.BankAccountServiceImpl;
 import com.example.workwave.services.ProjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 @RestController
 public class BankAccountController {
     @Autowired
@@ -131,5 +133,73 @@ public class BankAccountController {
         List<Map<String, Object>> balanceHistoryWithPercentageChange = bankAccountService.getBalanceHistoryWithPercentageChange(accountId, currentBalance);
         return ResponseEntity.ok(balanceHistoryWithPercentageChange);
     }
+    @GetMapping("/balances/{bankAccountId}")
+    public List<Double> getBalancesForPastMonth(@PathVariable Long bankAccountId) {
+        BankAccount bankAccount = bankAccountRepository.findById(bankAccountId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Bank account not found"));
+
+        LocalDate currentDate = LocalDate.now();
+        LocalDate startDate = currentDate.minusDays(30);
+
+        Map<LocalDate, Double> balances = new TreeMap<>();
+
+        Double balance = bankAccount.getBalance();
+        balances.put(currentDate, balance);
+
+        List<Transactions> transactions = transactionRepository.findByBankAccountAndTransactionDateBetweenOrderByTransactionDateDesc(bankAccount, startDate, currentDate);
+
+        for (Transactions transaction : transactions) {
+            LocalDate transactionDate = transaction.getTransactionDate();
+            Double transactionAmount = transaction.getAmount();
+
+            balance -= transactionAmount;
+            balances.put(transactionDate, balance);
+
+            LocalDate previousDate = transactionDate.plusDays(1);
+            while (previousDate.isBefore(currentDate) || previousDate.isEqual(currentDate)) {
+                if (!balances.containsKey(previousDate)) {
+                    balances.put(previousDate, balance);
+                }
+                previousDate = previousDate.plusDays(1);
+            }
+        }
+
+        // Add balance for the day before the 30-day period
+        LocalDate dayBeforeStartDate = startDate.minusDays(1);
+        Double balanceBeforeStartDate = balances.get(dayBeforeStartDate);
+        if (balanceBeforeStartDate == null) {
+            balanceBeforeStartDate = balance;
+        }
+        balances.put(dayBeforeStartDate, balanceBeforeStartDate);
+
+        // Create list of balances
+        List<Double> balanceList = new ArrayList<>();
+        LocalDate currentDateMinus30Days = currentDate.minusDays(29);
+        while (currentDateMinus30Days.isBefore(currentDate) || currentDateMinus30Days.isEqual(currentDate)) {
+            Double dateBalance = balances.get(currentDateMinus30Days);
+            if (dateBalance == null) {
+                LocalDate previousDate = currentDateMinus30Days.minusDays(1);
+                while (previousDate.isAfter(startDate)) {
+                    Double previousBalance = balances.get(previousDate);
+                    if (previousBalance != null) {
+                        dateBalance = previousBalance;
+                        break;
+                    }
+                    previousDate = previousDate.minusDays(1);
+                }
+                if (dateBalance == null) {
+                    dateBalance = 0.0;
+                }
+            }
+            balanceList.add(dateBalance);
+            currentDateMinus30Days = currentDateMinus30Days.plusDays(1);
+        }
+
+        // Add current balance to end of list
+        balanceList.add(balance);
+
+        return balanceList;
+    }
+
+
 
 }

@@ -126,6 +126,25 @@ public class PaymentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @PostMapping("/autopay")
+    public ResponseEntity<String> autoPay(@RequestParam String userName,
+                                          @RequestParam Long senderBankAccountId,
+                                          @RequestParam Long receiverBankAccountId) {
+        // retrieve the user, sender bank account, and receiver bank account from the database
+        User user = userRepository.findById(userName).orElse(null);
+        BankAccount senderBankAccount = bankAccountRepository.findById(senderBankAccountId).orElse(null);
+        BankAccount receiverBankAccount = bankAccountRepository.findById(receiverBankAccountId).orElse(null);
+
+        // check if any of the objects retrieved from the database are null
+        if (user == null || senderBankAccount == null || receiverBankAccount == null) {
+            return ResponseEntity.badRequest().body("Invalid user or bank account IDs");
+        }
+
+        // call the autoPay method in the payment service
+        paymentService.autoPay(userName, senderBankAccountId, receiverBankAccountId);
+
+        return ResponseEntity.ok("AutoPay initiated");
+    }
 //    ----------------- STATISTICSSSS ----------------------
 
     @GetMapping("/totalAmountPaidBySenderBankAccountId")
@@ -160,7 +179,7 @@ public class PaymentController {
        Double totalAmountPaidYesterday = paymentRepository.getTotalAmountPaidYesterday(senderBankAccountId,yesterdayDate);
 
        if (totalAmountPaidYesterday == null || totalAmountPaidYesterday == 0) {
-           return ResponseEntity.badRequest().body(null);
+           return ResponseEntity.badRequest().body(0.0);
        }
 
        Double difference = totalAmountPaidToday - totalAmountPaidYesterday;
@@ -168,10 +187,17 @@ public class PaymentController {
 
        return ResponseEntity.ok().body(percentageChange);
    }
+    @GetMapping("/payments/highest/{bankAccountId}")
+    public ResponseEntity<Payment> getHighestPaymentByBankAccount(@PathVariable Long bankAccountId) {
+        Payment highestPayment = paymentRepository.findHighestPaymentByBankAccount(bankAccountId);
+        return ResponseEntity.ok(highestPayment);
+    }
 
-
-
-
+    @GetMapping("/payments/lowest/{bankAccountId}")
+    public ResponseEntity<Payment> getLowestPaymentByBankAccount(@PathVariable Long bankAccountId) {
+        Payment lowestPayment = paymentRepository.findLowestPaymentByBankAccount(bankAccountId);
+        return ResponseEntity.ok(lowestPayment);
+    }
 
 
 }

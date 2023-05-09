@@ -82,6 +82,23 @@ public class TransactionController {
         Long transactionCount = transactionRepository.getTransactionCountByBankAccountIdToday(bankAccountId);
         return ResponseEntity.ok().body(transactionCount);
     }
+    @GetMapping("/{id}/highest-transaction")
+    public ResponseEntity<?> getHighestTransaction(@PathVariable Long id) {
+        Transactions highestTransaction = transactionRepository.findHighestTransactionByBankAccountId(id);
+        if (highestTransaction == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(highestTransaction);
+    }
+
+    @GetMapping("/{id}/lowest-transaction")
+    public ResponseEntity<?> getLowestTransaction(@PathVariable Long id) {
+        Transactions lowestTransaction = transactionRepository.findLowestTransactionByBankAccountId(id);
+        if (lowestTransaction == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(lowestTransaction);
+    }
 
 
 

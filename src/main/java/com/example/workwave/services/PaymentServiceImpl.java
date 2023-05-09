@@ -25,7 +25,9 @@ public class PaymentServiceImpl {
     private UserRepository userRepository;
     @Autowired
     ServletContext context;
-
+    private String userName;
+    private Long senderBankAccountId;
+    private Long receiverBankAccountId;
     public List<Payment> GetAllPayments() {
         return paymentRepository.findAll();
     }
@@ -66,36 +68,42 @@ public class PaymentServiceImpl {
             throw new EntityNotFoundException("Payment not found with id " + id);
         }
     }
-  //  @Scheduled(cron = "0 0 0 1 * ?")
-  //  public void autoPay(User user,Long senderBankAccountId, Long receiverBankAccountId) {
-  //      BankAccount senderBankAccount = bankAccountRepository.findById(senderBankAccountId).orElse(null);
-  //      BankAccount receiverBankAccount = bankAccountRepository.findById(receiverBankAccountId).orElse(null);
-//
-  //      Payment payment = new Payment();
-  //          payment.setPaymentNumber("AutoPay-" + LocalDate.now().toString());
-  //          payment.setPaymentDate(LocalDate.now());
-  //          payment.setAmountPaid((double) user.getSalary());
-  //          payment.setDescription("AutoPay Salary");
-  //          payment.setPaymentStatus(PaymentStatus.PAID);
-  //          payment.setCreatedBy("System");
-  //          payment.setCreatedAt(LocalDateTime.now());
-  //          payment.setBankAccount(receiverBankAccount);
-  //          payment.setSenderBankAccountId(senderBankAccountId);
-  //          paymentRepository.save(payment);
-  //      Double salary = Double.valueOf(user.getSalary());
-  //      if (senderBankAccount.getBalance() < salary) {
-  //          throw new RuntimeException("Insufficient funds");
-  //      }
-  //      Double senderNewBalance = senderBankAccount.getBalance() - salary;
-  //      Double receiverNewBalance = receiverBankAccount.getBalance() + salary;
-//
-  //      senderBankAccount.setBalance(senderNewBalance);
-  //      receiverBankAccount.setBalance(receiverNewBalance);
-  //      bankAccountRepository.save(senderBankAccount);
-  //      bankAccountRepository.save(receiverBankAccount);
-//
-//
-  //  }
+
+    public void autoPay(String userName, Long senderBankAccountId, Long receiverBankAccountId) {
+        this.userName = userName;
+        this.senderBankAccountId = senderBankAccountId;
+        this.receiverBankAccountId = receiverBankAccountId;
+        scheduledAutoPay();
+    }
+
+    @Scheduled(cron = "0 0 0 1 * ?")
+    public void scheduledAutoPay() {
+        // use the stored user and bank account IDs in the payment processing logic
+        BankAccount senderBankAccount = bankAccountRepository.findById(senderBankAccountId).orElse(null);
+        BankAccount receiverBankAccount = bankAccountRepository.findById(receiverBankAccountId).orElse(null);
+        Payment payment = new Payment();
+        payment.setPaymentNumber("AutoPay-" + LocalDate.now().toString());
+        payment.setPaymentDate(LocalDate.now());
+        User user = userRepository.findById(userName).get();
+        payment.setAmountPaid((double) user.getSalary());
+        payment.setDescription("AutoPay Salary");
+        payment.setPaymentStatus(PaymentStatus.PAID);
+        payment.setCreatedBy("System");
+        payment.setCreatedAt(LocalDateTime.now());
+        payment.setBankAccount(receiverBankAccount);
+        payment.setSenderBankAccountId(senderBankAccountId);
+        paymentRepository.save(payment);
+        Double salary = Double.valueOf(user.getSalary());
+        if (senderBankAccount.getBalance() < salary) {
+            throw new RuntimeException("Insufficient funds");
+        }
+        Double senderNewBalance = senderBankAccount.getBalance() - salary;
+        Double receiverNewBalance = receiverBankAccount.getBalance() + salary;
+        senderBankAccount.setBalance(senderNewBalance);
+        receiverBankAccount.setBalance(receiverNewBalance);
+        bankAccountRepository.save(senderBankAccount);
+        bankAccountRepository.save(receiverBankAccount);
+    }
     public String paySalary(User user, Long senderBankAccountId, Long receiverBankAccountId) {
         BankAccount senderBankAccount = bankAccountRepository.findById(senderBankAccountId).orElse(null);
         BankAccount receiverBankAccount = bankAccountRepository.findById(receiverBankAccountId).orElse(null);

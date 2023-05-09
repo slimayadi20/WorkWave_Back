@@ -8,9 +8,8 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.ServletContext;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
 @Service
 public class BudgetServiceImpl {
     @Autowired
@@ -126,6 +125,65 @@ public class BudgetServiceImpl {
         } else {
             throw new EntityNotFoundException("Bank Account not found with id " + id);
         }
+    }// Method to get the project name and budget amount of the highest budget for a specific bankAccount
+    // Method to get the project name and budget amount of the highest budget for a specific bankAccount
+    public Map<String, Object> getHighestBudgetForBankAccount(Long bankAccountId) {
+        BankAccount bankAccount = bankAccountRepository.findById(bankAccountId).orElse(null);
+        if (bankAccount == null) {
+            // BankAccount not found
+            return null;
+        }
+
+        List<Budget> budgets = bankAccount.getBudget();
+        if (budgets == null || budgets.isEmpty()) {
+            // No budget found for this bankAccount
+            return null;
+        }
+
+        // Sort the budgets in descending order based on the amount
+        Collections.sort(budgets, Comparator.comparing(Budget::getAmount).reversed());
+
+        // Get the project name and budget amount of the highest budget
+        Budget highestBudget = budgets.get(0);
+        String projectName = highestBudget.getProject().getProjectname();
+        Double budgetAmount = highestBudget.getAmount();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("projectName", projectName);
+        result.put("budgetAmount", budgetAmount);
+        return result;
     }
+
+
+    // Method to get the project name and budget amount of the lowest budget for a specific bankAccount
+    public Map<String, Object> getLowestBudgetForBankAccount(Long bankAccountId) {
+        BankAccount bankAccount = bankAccountRepository.findById(bankAccountId).orElse(null);
+        if (bankAccount == null) {
+            // BankAccount not found
+            return null;
+        }
+
+        List<Budget> budgets = bankAccount.getBudget();
+        if (budgets == null || budgets.isEmpty()) {
+            // No budget found for this bankAccount
+            return null;
+        }
+
+        // Sort the budgets in ascending order based on the amount
+        Collections.sort(budgets, Comparator.comparing(Budget::getAmount));
+
+        // Get the project name and budget amount of the lowest budget
+        Budget lowestBudget = budgets.get(0);
+        String projectName = lowestBudget.getProject().getProjectname();
+        Double budgetAmount = lowestBudget.getAmount();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("projectName", projectName);
+        result.put("budgetAmount", budgetAmount);
+        return result;
+    }
+
+
+
 
 }

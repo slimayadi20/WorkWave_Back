@@ -47,5 +47,17 @@ public class ProjectController {
     public Project getProjectById(@PathVariable Long id) {
         return projectService.getProjectById(id);
     }
+    @GetMapping("/projects/count")
+    public Long countProjects() {
+        return projectRepository.countProjects();
+    }
+    @GetMapping("/projects/count/active")
+    public Long countActiveProjects() {
+        return projectRepository.countActiveProjects();
+    }
+    @GetMapping("/projects/count/inactive")
+    public Long countInactiveProjects() {
+        return projectRepository.countInactiveProjects();
+    }
 
 }

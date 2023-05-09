@@ -61,4 +61,5 @@ public class TransactionServiceImpl {
     public List<Transactions> GetTransactionsByBankAccount(BankAccount bankAccount) {
         return transactionRepository.findByBankAccount(bankAccount);
     }
+
 }

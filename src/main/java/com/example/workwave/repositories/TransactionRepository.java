@@ -22,6 +22,13 @@ public interface TransactionRepository extends JpaRepository<Transactions,Long> 
         Long getTransactionCountByBankAccountIdToday(@Param("bankAccountId") Long bankAccountId);
         @Query("SELECT t.amount FROM Transactions t WHERE t.bankAccount = :bankAccount AND t.transactionDate >= :startDate AND t.transactionDate <= :endDate")
         List<Double> getBalanceChangesForPastMonth(@Param("bankAccount") BankAccount bankAccount, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+        @Query(value = "SELECT * FROM Transactions WHERE bank_account_id = :bankAccountId ORDER BY amount DESC LIMIT 1", nativeQuery = true)
+        Transactions findHighestTransactionByBankAccountId(@Param("bankAccountId") Long bankAccountId);
+
+        @Query(value = "SELECT * FROM Transactions WHERE bank_account_id = :bankAccountId ORDER BY amount ASC LIMIT 1", nativeQuery = true)
+        Transactions findLowestTransactionByBankAccountId(@Param("bankAccountId") Long bankAccountId);
 
         List<Transactions> findByBankAccountAndTransactionDateBetween(BankAccount bankAccount, LocalDate startDate, LocalDate endDate);
+
+    List<Transactions> findByBankAccountAndTransactionDateBetweenOrderByTransactionDateDesc(BankAccount bankAccount, LocalDate startDate, LocalDate currentDate);
 }
