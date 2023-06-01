@@ -57,5 +57,26 @@ public class TaskController {
 
         return task;
     }
+    //******************************************
+    @GetMapping("/tasks/count")
+    public Long countTasks() {
+        return taskRepository.count();
+    }
+    @GetMapping("/tasks/in-progress/count")
+    public Long countTasksInProgress() {
+        return taskRepository.countByEtat("In Progress");
+    }
+    @GetMapping("/tasks/open/count")
+    public Long countTasksOpen() {
+        return taskRepository.countByEtat("Open");
+    }
+    @GetMapping("/tasks/toreview/count")
+    public Long countToReviewTasks() {
+        return taskRepository.countByEtat("ToReview");
+    }
+    @GetMapping("/tasks/completed/count")
+    public Long countCompletedTasks() {
+        return taskRepository.countByEtat("Completed");
+    }
 
 }

@@ -42,8 +42,10 @@ public class BudgetServiceImpl {
         budget.setProject(project);
         budget.setBankAccount(bankAccount);
         project.setBudget(budget);
-
         budgetRepository.save(budget);
+        projectRepository.save(project);
+
+
 
 
         return budget;

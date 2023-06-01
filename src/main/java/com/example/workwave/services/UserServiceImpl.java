@@ -88,6 +88,7 @@ public class UserServiceImpl {
             userRoles.add(role);
             user.setRole(userRoles);
             user.setPassword(getEncodedPassword(user.getPassword()));
+            user.setEtat("Inactive");
             User savedUser = userRepository.save(user);
 
             if (savedUser != null) {

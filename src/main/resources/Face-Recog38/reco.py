@@ -3,7 +3,7 @@ import cv2
 import face_recognition
 
 # Set the directory where the faces are stored
-faces_directory = 'C:\\Users\\MSI\\Desktop\\4 arctic\\WorkWave\\src\\main\\resources\\Face-Recog38//faces'
+faces_directory = 'C:\\Users\\MSI\\Desktop\\Face-Recog38'
 
 # Load the known faces and their names
 known_face_encodings = []
@@ -54,19 +54,17 @@ while True:
         cv2.putText(frame, name, (left + 6, bottom - 6), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 1)
 
         # Check if the recognized face is authenticated
+        # if name != "Unknown":
+        #     print("authenticated")
+        #     cap.release()
+        #     cv2.destroyAllWindows()
+        #     exit(0)
         if name != "Unknown":
-            try:
-                user_id = name.split('-')[1]
-                print(f"authenticated {user_id}")
-
-                cap.release()
-                cv2.destroyAllWindows()
-                exit(0)
-            except IndexError:
-                print("Error: invalid user ID format.")
-                cap.release()
-                cv2.destroyAllWindows()
-                exit(1)
+            user_id = name.split('-')[1]
+            print(f"authenticated {user_id}")
+            cap.release()
+            cv2.destroyAllWindows()
+            exit(0)
 
     # Display the resulting image
     cv2.imshow('Video', frame)

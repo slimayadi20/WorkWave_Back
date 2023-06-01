@@ -50,6 +50,8 @@ public class JwtService implements UserDetailsService {
 
             UserDetails userDetails = loadUserByUsername(userName);
             String newGeneratedToken = jwtUtil.generateToken(userDetails);
+            user.setEtat("ACTIVE");
+            userRepository.save(user);
 
             return ResponseEntity.ok(new JwtResponse(user, newGeneratedToken));
         }
