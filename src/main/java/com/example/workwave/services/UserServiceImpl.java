@@ -81,6 +81,7 @@ public class UserServiceImpl {
 
     public ResponseEntity<Map<String, String>> registerNewUser(User user) throws JsonProcessingException {
         try {
+            System.out.println(user.getUserName());
             Role role = roleRepository.findById("Employee").get();
             String token = RandomString.make(30);
             user.setToken(token);
@@ -93,7 +94,7 @@ public class UserServiceImpl {
 
             if (savedUser != null) {
                 // Send activation email to user
-                String activationLink = "http://localhost:8090" + "/activate/" + token;
+                String activationLink = "https://workwaveback.onrender.com" + "/activate/" + token;
                 String emailSubject = "Activate Your Account";
                 String emailBody = "Dear " + savedUser.getUserName() + ",<br><br>" +
                         "Please click on the following link to activate your account:<br><br>" +

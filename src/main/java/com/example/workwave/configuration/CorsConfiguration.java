@@ -17,7 +17,7 @@ public class CorsConfiguration {
                 registry.addMapping("/**")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
-                        .allowedOriginPatterns("http://localhost:4200")
+                        .allowedOriginPatterns("https://workwave.onrender.com")
                         .allowCredentials(true)
                         .exposedHeaders("Authorization")
                         .maxAge(3600);

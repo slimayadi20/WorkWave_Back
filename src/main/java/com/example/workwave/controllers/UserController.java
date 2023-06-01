@@ -19,6 +19,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityNotFoundException;
@@ -47,10 +48,10 @@ public class UserController {
     private OtpRepository otpRepository;
     @Autowired
     private JavaMailSender mailSender;
-   /* @PostConstruct //lors de l'execution
+     @PostConstruct //lors de l'execution
     public void initRoleAndUser() {
         userService.initRolesAndUser();
-    }*/
+    }
 
 
     @GetMapping(path = "/ImgUsers/{userName}")
@@ -127,7 +128,7 @@ public class UserController {
         try {
             String oldToken = userService.updateToken(token);
             if (oldToken == null) {
-                response.sendRedirect("http://localhost:4200/auth");
+                response.sendRedirect("https://workwave.onrender.com");
                 return null; // return null to prevent ResponseEntity from being returned
             }
             return ResponseEntity.ok().build();
